@@ -1,18 +1,4 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # SOS — MilkYield, bronze (read-only check)
-# MAGIC Daily milk recording from the farms' milking systems: one workbook, **one sheet per farm**, one row per cow per
-# MAGIC day (`Usernumber`, `Life number`, `Lactation number`, `Calving date`, `Dry off date`, `Date`, `Lactation day`,
-# MAGIC `Day production`, `Fat percentage`, `Protein percentage`).
-# MAGIC
-# MAGIC **How the file gets into bronze:** upload the workbook unchanged through *Catalog → bronze → bronze_volume →
-# MAGIC Upload to this volume*, into a folder named `MilkYield`. Bronze is the raw source: this notebook only reads it
-# MAGIC and checks that it has the expected shape. It writes nothing.
-# MAGIC
-# MAGIC The sheet names are farm names, so this notebook prints sheets by number only.
-
-# COMMAND ----------
-
 # MAGIC %pip install openpyxl==3.1.2
 
 # COMMAND ----------

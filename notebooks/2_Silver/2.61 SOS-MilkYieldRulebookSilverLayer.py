@@ -1,11 +1,4 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # SOS MilkYield — Rulebook
-# MAGIC Writes the MilkYield rows of the shared metadata tables (`Rulebook`, `CleaningConstraints`). The silver
-# MAGIC notebook `2.62` reads these rows to rename, type and range-check the columns.
-
-# COMMAND ----------
-
 dbutils.widgets.text("catalog", "senseofsensors_catalog")
 CATALOG       = dbutils.widgets.get("catalog").strip()
 SILVER_SCHEMA = f"{CATALOG}.silver"

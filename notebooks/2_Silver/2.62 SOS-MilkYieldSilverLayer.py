@@ -1,18 +1,4 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # SOS MilkYield — silver cleaning
-# MAGIC Reads the milk workbook from bronze (`bronze_volume/MilkYield/*.xlsx`, one sheet per farm), applies the
-# MAGIC MilkYield rows of the `Rulebook` (written by `2.61`), and writes `silver_volume/MilkYield` (Delta).
-# MAGIC
-# MAGIC * **Farm assignment.** Sheet names are farm names and are never stored. Each sheet is matched to the farm
-# MAGIC   whose cows share the most (hashed) life numbers with it, using silver ReferenceData and, when present,
-# MAGIC   gold LactationWindows and GoldMaster. The notebook stops if a match is weak or ambiguous.
-# MAGIC * **Every row is kept** (except exact duplicates). Problems become entries in `Warnings`; repeated records
-# MAGIC   for the same cow-day are flagged here and averaged in gold.
-# MAGIC * Run `1.4` (check), then `2.61` (rulebook), then this notebook.
-
-# COMMAND ----------
-
 # MAGIC %pip install openpyxl==3.1.2
 
 # COMMAND ----------
@@ -55,16 +41,17 @@ from functools import reduce
 from pyspark.sql import functions as F, Window
 from pyspark.sql.types import StructType, StructField, StringType, IntegerType
 
-# Rules from the shared Rulebook
-rules = (spark.table(f"{SILVER_SCHEMA}.Rulebook").where(F.col("Dataset") == DATASET)
-              .orderBy("Ordinal").collect())
+# Rules from the shared Rulebook. Column names in that table may be camelCase or PascalCase
+# (it was created by an earlier rulebook version), so read every row case-insensitively.
+rules = [{k.lower(): v for k, v in r.asDict().items()} for r in
+         spark.table(f"{SILVER_SCHEMA}.Rulebook").where(F.col("Dataset") == DATASET).orderBy("Ordinal").collect()]
 if not rules:
     raise ValueError("No MilkYield rows in the Rulebook — run 2.61 first.")
-SRC2TGT    = {r.SourceColumn: r.TargetColumn for r in rules if r.SourceColumn}
-TYPES      = {r.TargetColumn: r.DataType for r in rules}
-RANGES     = {r.TargetColumn: (r.MinValue, r.MaxValue) for r in rules
-              if r.MinValue is not None or r.MaxValue is not None}
-ZERO_NULL  = [r.TargetColumn for r in rules if "ZeroToNull" in (r.CleaningStrategy or "")]
+SRC2TGT    = {r["sourcecolumn"]: r["targetcolumn"] for r in rules if r["sourcecolumn"]}
+TYPES      = {r["targetcolumn"]: r["datatype"] for r in rules}
+RANGES     = {r["targetcolumn"]: (r["minvalue"], r["maxvalue"]) for r in rules
+              if r["minvalue"] is not None or r["maxvalue"] is not None}
+ZERO_NULL  = [r["targetcolumn"] for r in rules if "ZeroToNull" in (r["cleaningstrategy"] or "")]
 FORMATS    = ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy-MM-dd", "dd-MM-yyyy"]
 BLANK      = ["", "NA", "N/A", "nan", "NaN", "NaT", "None", "null", "NULL", "-"]
 print(f"Rulebook: {len(rules)} columns · ranges for {sorted(RANGES)} · zero→null for {ZERO_NULL}")
@@ -154,13 +141,6 @@ df = (df.withColumn("Warnings", F.filter(F.array(*[F.when(cond, F.lit(msg)) for 
 
 print(f"Rows: {df.count():,} · with warnings: {df.where('WarningCount > 0').count():,}")
 display(df.select(F.explode("Warnings").alias("Warning")).groupBy("Warning").count().orderBy(F.desc("count")))
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ## Farm assignment by shared life numbers
-# MAGIC Life numbers are compared as hashes (the same hash every silver dataset uses), so no real farm ID or life
-# MAGIC number is printed.
 
 # COMMAND ----------
 

@@ -1,18 +1,4 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # Gold 10 — DailyMilkYield
-# MAGIC One row per cow per day of milk recording, from silver `MilkYield`.
-# MAGIC
-# MAGIC * **Cow key:** `LifeNumberDigits` (pseudonymised) — the same value as `BestLifeNumberDigits` in GoldMaster and
-# MAGIC   as `CowID` in the SOS24h/SOS2h exports. Rows without a life number cannot be linked and are left out.
-# MAGIC * **Repeated records for one cow-day** (the milking system sometimes stores a day twice with near-identical
-# MAGIC   yields) are averaged, not summed. If they disagree on the calving date, the latest calving on or before the
-# MAGIC   day is used.
-# MAGIC * **0 kg** and fat/protein values outside the Rulebook range are treated as missing.
-# MAGIC * `HasSensorData` marks cow-days that also exist in GoldMaster (sensor data), so they can be joined.
-
-# COMMAND ----------
-
 from pyspark.sql import functions as F, Window
 
 CATALOG       = "senseofsensors_catalog"
@@ -26,9 +12,10 @@ OUT_PATH      = f"{GOLD_VOLUME}/DailyMilkYield"
 milk = spark.read.format("delta").load(SRC_PATH)
 gm   = spark.read.format("delta").load(GM_PATH)
 
-ranges = {r.TargetColumn: (r.MinValue, r.MaxValue) for r in
-          spark.table(f"{SILVER_SCHEMA}.Rulebook").where("Dataset = 'MilkYield'").collect()
-          if r.TargetColumn in ("MilkFatPct", "MilkProteinPct")}
+_rows = [{k.lower(): v for k, v in r.asDict().items()} for r in
+         spark.table(f"{SILVER_SCHEMA}.Rulebook").where("Dataset = 'MilkYield'").collect()]
+ranges = {r["targetcolumn"]: (r["minvalue"], r["maxvalue"]) for r in _rows
+          if r["targetcolumn"] in ("MilkFatPct", "MilkProteinPct")}
 print(f"Silver MilkYield rows: {milk.count():,} · content ranges used: {ranges}")
 
 # COMMAND ----------

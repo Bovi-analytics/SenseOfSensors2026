@@ -1,20 +1,4 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC # SOS — add milk recording to SOS24h
-# MAGIC Run after `3.5` (the SOS24h/SOS2h export) and `3.40` (gold DailyMilkYield). It does **not** rebuild the
-# MAGIC existing files; it only adds:
-# MAGIC
-# MAGIC ```
-# MAGIC SOS24h/
-# MAGIC ├── DataDictionarySOS24h.csv   ← MilkDay rows added (replaced on re-run)
-# MAGIC ├── ReadMe.txt                 ← "Milk recording" section added (replaced on re-run)
-# MAGIC └── Farm_X/MilkDay.csv         ← one row per cow per milk-recording day (only farms with milk data)
-# MAGIC ```
-# MAGIC `MilkDay` links to `CowDay` and `Lactation` with `CowID` + `EventDay` (`CalvingDate` ≈ `LactationStart`).
-# MAGIC Milk is daily only, so SOS2h is unchanged.
-
-# COMMAND ----------
-
 dbutils.widgets.text("Catalog", "senseofsensors_catalog")
 dbutils.widgets.dropdown("OutputFormat", "CSV", ["CSV", "Parquet"])
 CATALOG = dbutils.widgets.get("Catalog")
