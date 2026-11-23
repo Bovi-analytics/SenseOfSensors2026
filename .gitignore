@@ -1,0 +1,29 @@
+# Private notebooks: never commit (anonymisation keys and setup, scratch work)
+0a SOS-*
+0b SOS-*
+*MISC*
+CodePractice*
+
+# Keys, secrets and credentials
+*.env
+.env*
+*secret*
+*salt*
+*farm_map*
+*.pem
+*.key
+.databrickscfg
+
+# Data and generated outputs: data is released through the dataset publication, not Git
+*.csv
+*.parquet
+*.xlsx
+*.zip
+*_Profile.html
+portraits/
+
+# Python / notebooks
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.DS_Store

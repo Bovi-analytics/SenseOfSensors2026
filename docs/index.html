@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SenseOfSensors — Research Report</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
+ 
+:root {
+  --cream:    #faf7f2;
+  --warm:     #f5efe6;
+  --warm2:    #ede3d4;
+  --border:   #d4c5b0;
+  --brown:    #5c4a35;
+  --brown2:   #8b6f47;
+  --green:    #3a6b4a;
+  --green2:   #5a9468;
+  --green3:   #c8dfc8;
+  --amber:    #c17f2a;
+  --amber2:   #e8a84a;
+  --amber3:   #fdf0d5;
+  --red:      #b03a2e;
+  --red2:     #e8a09a;
+  --text:     #2d2416;
+  --muted:    #7a6a57;
+  --muted2:   #a89880;
+  --white:    #ffffff;
+  --shadow:   0 2px 12px rgba(92,74,53,0.10);
+  --shadow2:  0 4px 24px rgba(92,74,53,0.14);
+}
+ 
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+ 
+body {
+  background: var(--cream);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+}
+ 
+/* ── NAV ─────────────────────────────────────────── */
+nav {
+  position: sticky; top: 0; z-index: 200;
+  background: rgba(250,247,242,0.96);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 2rem; height: 52px; gap: 0.5rem;
+}
+.nav-logo {
+  font-family: 'Source Serif 4', serif;
+  font-weight: 700; font-size: 1.05rem;
+  color: var(--brown); margin-right: 1.5rem;
+  white-space: nowrap;
+}
+.nav-logo span { color: var(--green); }
+nav a {
+  color: var(--muted); text-decoration: none;
+  font-size: 0.78rem; font-weight: 500;
+  padding: 0.3rem 0.7rem; border-radius: 4px;
+  transition: all 0.15s;
+}
+nav a:hover { background: var(--warm2); color: var(--brown); }
+.nav-spacer { flex: 1; }
+.nav-badge {
+  font-size: 0.72rem; padding: 0.2rem 0.6rem;
+  background: var(--green3); color: var(--green);
+  border-radius: 20px; font-weight: 600;
+}
+ 
+/* ── HERO ────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, var(--brown) 0%, #3d2c1a 60%, var(--green) 100%);
+  color: white; padding: 4rem 2rem 3.5rem;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-inner {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1.4fr 1fr; gap: 4rem;
+  align-items: center; position: relative;
+}
+.hero-eyebrow {
+  font-size: 0.72rem; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--amber2);
+  margin-bottom: 0.75rem;
+}
+.hero-title {
+  font-family: 'Source Serif 4', serif;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 700; line-height: 1.15;
+  color: white; margin-bottom: 1rem;
+}
+.hero-title em {
+  font-style: italic; color: var(--amber2);
+}
+.hero-desc {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.92rem; max-width: 520px;
+  margin-bottom: 1.5rem; line-height: 1.7;
+}
+.hero-institutions {
+  display: flex; gap: 1.5rem; flex-wrap: wrap;
+  align-items: center; margin-bottom: 1.5rem;
+}
+.inst-badge {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 6px; padding: 0.4rem 0.9rem;
+  font-size: 0.78rem; font-weight: 600;
+  color: rgba(255,255,255,0.9);
+}
+.hero-stats {
+  display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem;
+}
+.hero-stat {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px; padding: 1rem 1.2rem;
+}
+.hero-stat-val {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.8rem; font-weight: 700;
+  color: var(--amber2); line-height: 1;
+}
+.hero-stat-lbl {
+  font-size: 0.75rem; color: rgba(255,255,255,0.6);
+  margin-top: 0.3rem;
+}
+ 
+/* ── PIPELINE FLOW ───────────────────────────────── */
+.pipeline-flow {
+  display: flex; flex-direction: column; gap: 0.4rem;
+}
+.pl-layer {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px; padding: 0.9rem 1.2rem;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background 0.2s;
+}
+.pl-layer:hover { background: rgba(255,255,255,0.14); }
+.pl-name {
+  font-weight: 600; font-size: 0.85rem;
+  display: flex; align-items: center; gap: 0.5rem;
+}
+.pl-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.pl-dot.bronze { background: #cd9b5a; }
+.pl-dot.silver { background: #c0c0c0; }
+.pl-dot.gold   { background: var(--amber2); }
+.pl-count { font-size: 0.78rem; color: rgba(255,255,255,0.6); text-align:right; }
+.pl-count strong { display:block; color: white; font-size:0.9rem; }
+.pl-arrow { text-align:center; color:rgba(255,255,255,0.3); font-size:1rem; margin:-0.1rem 0; }
+ 
+/* ── LAYOUT ──────────────────────────────────────── */
+.page { max-width: 1200px; margin: 0 auto; }
+ 
+section {
+  padding: 3rem 2rem;
+  border-top: 1px solid var(--border);
+}
+section:first-of-type { border-top: none; }
+ 
+.section-eyebrow {
+  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--green);
+  margin-bottom: 0.4rem;
+}
+.section-title {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.5rem; font-weight: 700;
+  color: var(--brown); margin-bottom: 0.4rem;
+}
+.section-desc {
+  color: var(--muted); font-size: 0.87rem;
+  max-width: 680px; margin-bottom: 2rem; line-height: 1.7;
+}
+ 
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:1.5rem; }
+.grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+.grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
+ 
+/* ── CARDS ───────────────────────────────────────── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 0.75rem; font-weight: 600;
+  color: var(--muted); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 1rem;
+}
+ 
+/* ── STAT CARDS ──────────────────────────────────── */
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 1.2rem 1.4rem;
+  box-shadow: var(--shadow);
+}
+.stat-label { font-size: 0.73rem; color: var(--muted); font-weight:500; }
+.stat-value {
+  font-family: 'Source Serif 4', serif;
+  font-size: 1.9rem; font-weight: 700;
+  color: var(--brown); line-height: 1.15;
+  margin-top: 0.2rem;
+}
+.stat-value.green { color: var(--green); }
+.stat-value.amber { color: var(--amber); }
+.stat-value.red   { color: var(--red); }
+.stat-sub { font-size: 0.72rem; color: var(--muted2); margin-top: 0.2rem; }
+ 
+/* ── CONTROLS ────────────────────────────────────── */
+.controls {
+  display: flex; gap: 0.75rem; flex-wrap: wrap;
+  margin-bottom: 1.25rem; align-items: center;
+}
+.controls label {
+  font-size: 0.78rem; font-weight: 500; color: var(--muted);
+}
+select, .btn-group button {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem; font-weight: 500;
+  border: 1px solid var(--border);
+  border-radius: 6px; padding: 0.4rem 0.8rem;
+  background: var(--white); color: var(--brown);
+  cursor: pointer; transition: all 0.15s;
+}
+select:hover, .btn-group button:hover {
+  border-color: var(--brown2); background: var(--warm);
+}
+.btn-group { display: flex; gap: 0; border-radius: 6px; overflow: hidden; }
+.btn-group button {
+  border-radius: 0; border-right-width: 0;
+}
+.btn-group button:first-child { border-radius: 6px 0 0 6px; }
+.btn-group button:last-child  { border-radius: 0 6px 6px 0; border-right-width:1px; }
+.btn-group button.active {
+  background: var(--brown); color: white;
+  border-color: var(--brown);
+}
+ 
+/* ── TABS ────────────────────────────────────────── */
+.tabs {
+  display: flex; gap: 0; border-bottom: 2px solid var(--border);
+  margin-bottom: 1.5rem;
+}
+.tab {
+  padding: 0.6rem 1.2rem; font-size: 0.82rem; font-weight: 500;
+  color: var(--muted); cursor: pointer; border: none;
+  background: none; border-bottom: 2px solid transparent;
+  margin-bottom: -2px; transition: all 0.15s;
+}
+.tab:hover { color: var(--brown); }
+.tab.active { color: var(--brown); border-bottom-color: var(--green); font-weight: 600; }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+ 
+/* ── TABLE ───────────────────────────────────────── */
+.data-table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+.data-table th {
+  text-align:left; padding:0.6rem 1rem;
+  background: var(--warm); color: var(--muted);
+  font-weight:600; font-size:0.72rem;
+  border-bottom: 1px solid var(--border);
+  text-transform:uppercase; letter-spacing:0.05em;
+}
+.data-table td {
+  padding: 0.65rem 1rem;
+  border-bottom: 1px solid rgba(212,197,176,0.4);
+  color: var(--text);
+}
+.data-table tr:last-child td { border-bottom:none; }
+.data-table tr:hover td { background: var(--warm); }
+ 
+/* ── BADGES ──────────────────────────────────────── */
+.badge {
+  display:inline-block; padding:0.18rem 0.55rem;
+  border-radius:4px; font-size:0.7rem; font-weight:600;
+}
+.badge-green  { background:rgba(58,107,74,0.12);  color:var(--green);  }
+.badge-amber  { background:rgba(193,127,42,0.12); color:var(--amber);  }
+.badge-red    { background:rgba(176,58,46,0.12);  color:var(--red);    }
+.badge-brown  { background:rgba(92,74,53,0.12);   color:var(--brown);  }
+ 
+/* ── FINDING CARDS ───────────────────────────────── */
+.finding {
+  border-left: 3px solid var(--green);
+  padding: 0.9rem 1.2rem;
+  background: rgba(58,107,74,0.05);
+  border-radius: 0 8px 8px 0;
+  margin-bottom: 0.85rem;
+}
+.finding-num {
+  font-size: 0.68rem; font-weight: 700; letter-spacing:0.1em;
+  text-transform: uppercase; color: var(--green);
+  margin-bottom: 0.2rem;
+}
+.finding-title { font-weight: 600; color: var(--brown); font-size:0.88rem; }
+.finding-desc  { color: var(--muted); font-size:0.82rem; margin-top:0.25rem; line-height:1.6; }
+ 
+/* ── PAPER CARDS ─────────────────────────────────── */
+.paper-card {
+  background: var(--warm);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 1rem 1.2rem;
+  margin-bottom: 0.75rem;
+}
+.paper-title  { font-weight:600; font-size:0.85rem; color:var(--brown); line-height:1.4; }
+.paper-meta   { font-size:0.75rem; color:var(--muted); margin-top:0.2rem; font-style:italic; }
+.paper-finding { font-size:0.78rem; color:var(--green); margin-top:0.4rem; font-weight:500; }
+ 
+/* ── CLEANING STEPS ──────────────────────────────── */
+.step { display:flex; gap:1rem; margin-bottom:1.2rem; }
+.step-num {
+  min-width:28px; height:28px;
+  background:var(--green); color:white;
+  border-radius:50%; display:flex;
+  align-items:center; justify-content:center;
+  font-weight:700; font-size:0.8rem; flex-shrink:0;
+  margin-top:0.1rem;
+}
+.step-title { font-weight:600; font-size:0.85rem; color:var(--brown); }
+.step-desc  { font-size:0.8rem; color:var(--muted); margin-top:0.15rem; line-height:1.55; }
+ 
+/* ── PROFILE BARS ────────────────────────────────── */
+.null-bar { height:5px; background:var(--warm2); border-radius:3px; overflow:hidden; margin-top:3px; }
+.null-fill { height:100%; border-radius:3px; transition: width 0.6s ease; }
+.null-fill.low  { background: var(--green2); }
+.null-fill.mid  { background: var(--amber);  }
+.null-fill.high { background: var(--red);    }
+ 
+/* ── VALIDATED BANNER ────────────────────────────── */
+.validated-banner {
+  background: rgba(58,107,74,0.08);
+  border: 1px solid rgba(58,107,74,0.25);
+  border-radius: 8px; padding: 0.75rem 1rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  font-size: 0.82rem; color: var(--green);
+  font-weight: 500; margin-bottom: 1rem;
+}
+ 
+/* ── FOOTER ──────────────────────────────────────── */
+footer {
+  background: var(--brown);
+  color: rgba(255,255,255,0.7);
+  padding: 2.5rem 2rem; text-align: center;
+  font-size: 0.8rem; line-height: 1.7;
+}
+footer strong { color: white; }
+
+/* ── DATA & CODE ─────────────────────────────────── */
+.access-card h3 { font-family:'Source Serif 4',serif; font-size:1.05rem; color:var(--brown); margin-bottom:0.4rem; }
+.access-card p  { font-size:0.84rem; color:var(--muted); line-height:1.6; margin-bottom:0.9rem; }
+.access-card a.btn { display:inline-block; font-size:0.8rem; font-weight:600; color:var(--white); background:var(--green);
+  border-radius:6px; padding:0.45rem 0.9rem; text-decoration:none; margin:0 0.4rem 0.4rem 0; }
+.access-card a.btn.alt { background:transparent; color:var(--green); border:1px solid var(--green); }
+.access-card .pending { font-size:0.78rem; color:var(--amber); font-weight:600; }
+.licence-row { margin-top:1.5rem; font-size:0.84rem; color:var(--muted); line-height:1.7; }
+.licence-row a { color:var(--green); }
+nav a { white-space: nowrap; }
+@media (max-width: 1280px) { .nav-badge { display: none; } }
+ 
+/* ── RESPONSIVE ──────────────────────────────────── */
+@media (max-width: 768px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+  .controls, .btn-group { flex-wrap: wrap; max-width: 100%; }
+  section { padding: 2.5rem 1rem; }
+  section * { min-width: 0; }
+  .paper-card { overflow-wrap: anywhere; }
+  nav a { display: none; }
+}
+</style>
+</head>
+<body>
+ 
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Sense<span>Of</span>Sensors</div>
+  <a href="#access">Data &amp; Code</a>
+  <a href="#overview">Overview</a>
+  <a href="#behaviour">Behaviour</a>
+  <a href="#clinical">Clinical</a>
+  <a href="#heat">Heat Stress</a>
+  <a href="#repro">Reproduction</a>
+  <a href="#research">Research</a>
+  <a href="#pipeline">Pipeline</a>
+  <a href="#profile">Profile</a>
+  <div class="nav-spacer"></div>
+  <span class="nav-badge">8 Farms · 2016–2020</span>
+</nav>
+ 
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner page">
+    <div>
+      <div class="hero-eyebrow">Precision Dairy Farming Analytics</div>
+      <h1 class="hero-title">
+        Leg Sensor Data<br>from <em>Commercial Dairy Farms</em><br>— Research Report
+      </h1>
+      <p class="hero-desc">
+        A complete medallion data pipeline processing 1.2 billion leg-sensor readings
+        from 8 commercial dairy farms. Covering behaviour, heat stress, transition
+        cow health, and reproductive performance across 2016–2020.
+      </p>
+      <div class="hero-institutions">
+        <div class="inst-badge">Utrecht University</div>
+        <div class="inst-badge">Cornell University</div>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-val">1.2B</div>
+          <div class="hero-stat-lbl">Raw sensor readings</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">8</div>
+          <div class="hero-stat-lbl">Commercial dairy farms</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">1,648</div>
+          <div class="hero-stat-lbl">Cow-lactation records</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-val">158</div>
+          <div class="hero-stat-lbl">Analysis columns in GoldMaster</div>
+        </div>
+      </div>
+    </div>
+ 
+    <div class="pipeline-flow">
+      <div style="font-size:0.72rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:0.5rem">
+        Medallion Pipeline
+      </div>
+      <div class="pl-layer">
+        <div class="pl-name"><div class="pl-dot bronze"></div>Bronze — Raw Ingestion</div>
+        <div class="pl-count"><strong>1,214,421,979</strong>SensorData rows</div>
+      </div>
+      <div class="pl-arrow">↓</div>
+      <div class="pl-layer">
+        <div class="pl-name"><div class="pl-dot bronze"></div>Bronze — Calendar Events</div>
+        <div class="pl-count"><strong>85,578</strong>raw events</div>
+      </div>
+      <div class="pl-arrow">↓</div>
+      <div class="pl-layer">
+        <div class="pl-name"><div class="pl-dot silver"></div>Silver — 4 Datasets Cleaned</div>
+        <div class="pl-count"><strong>5 metadata tables</strong>rules-as-data</div>
+      </div>
+      <div class="pl-arrow">↓</div>
+      <div class="pl-layer">
+        <div class="pl-name"><div class="pl-dot gold"></div>Gold — 7 Delta Tables</div>
+        <div class="pl-count"><strong>2,530,267</strong>GoldMaster rows</div>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+<div class="page">
+
+<!-- DATA & CODE -->
+<section id="access">
+  <div class="section-eyebrow">Open Data &amp; Code</div>
+  <div class="section-title">Get the Data, the Pipeline and the Documentation</div>
+  <p class="section-desc">
+    Two analysis-ready datasets are released from the gold layer, one folder per farm (Farm A–Farm H).
+    Farm, animal and life-number identifiers are pseudonymised; raw (bronze) data is not shared.
+  </p>
+  <div class="grid-3">
+    <div class="card access-card">
+      <h3>SOS24h — daily dataset</h3>
+      <p>One row per cow per day: time budgets (eating, ruminating, lying, standing, walking, inactive),
+         lactation stage, health and reproduction records, and daily farm climate (THI).</p>
+      <span class="pending">Dataset DOI: added on publication</span>
+    </div>
+    <div class="card access-card">
+      <h3>SOS2h — 2-hour dataset</h3>
+      <p>The same cows in twelve 2-hour bins per day, built from the 15-minute sensor series,
+         with 2-hourly farm climate. Daily totals in SOS24h equal the sum of these bins.</p>
+      <span class="pending">Dataset DOI: added on publication</span>
+    </div>
+    <div class="card access-card">
+      <h3>Pipeline code</h3>
+      <p>The Databricks notebooks that build bronze, silver and gold, the rulebooks that declare every
+         cleaning rule, and the export that writes SOS24h and SOS2h.</p>
+      <a class="btn" href="https://github.com/Bovi-analytics/SenseOfSensors2026">GitHub repository</a>
+      <a class="btn alt" href="https://github.com/Bovi-analytics/SenseOfSensors2026/tree/main/notebooks">Notebooks</a>
+      <a class="btn alt" href="https://github.com/Bovi-analytics/SenseOfSensors2026#readme">README</a>
+    </div>
+  </div>
+  <div class="licence-row">
+    <strong>Licences.</strong> Data: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
+    (<a href="https://github.com/Bovi-analytics/SenseOfSensors2026/blob/main/LICENSE-DATA.md">LICENSE-DATA</a>) · Code: MIT
+    (<a href="https://github.com/Bovi-analytics/SenseOfSensors2026/blob/main/LICENSE">LICENSE</a>).
+    Please cite the dataset publication when you use the data.
+  </div>
+</section>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <div class="section-eyebrow">Dataset Overview</div>
+  <div class="section-title">Eight Farms, Five Years, Five Behaviours</div>
+  <p class="section-desc">
+    Leg-mounted sensors measure standing, lying, walking, eating and ruminating
+    continuously. One reading every 15 minutes per cow. Data collected across 8 commercial
+    dairy herds spanning a range of herd sizes, management systems, and housing types.
+  </p>
+ 
+  <div class="grid-4" style="margin-bottom:1.5rem">
+    <div class="stat-card">
+      <div class="stat-label">Distinct animals monitored</div>
+      <div class="stat-value green">1,470</div>
+      <div class="stat-sub">Across all 8 farms</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Total animal-days</div>
+      <div class="stat-value">2.53M</div>
+      <div class="stat-sub">One row per animal per day</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Clinical records</div>
+      <div class="stat-value amber">1,648</div>
+      <div class="stat-sub">Cow-lactation calving records</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Calendar events</div>
+      <div class="stat-value">48,814</div>
+      <div class="stat-sub">Calving, dryoff, insemination</div>
+    </div>
+  </div>
+ 
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Animal-Days per Farm</div>
+      <div id="farmDaysCtrl" class="controls">
+        <label>Sort by:</label>
+        <div class="btn-group">
+          <button class="active" onclick="sortFarmDays('farm')">Farm ID</button>
+          <button onclick="sortFarmDays('days')">Days</button>
+          <button onclick="sortFarmDays('animals')">Animals</button>
+        </div>
+      </div>
+      <div style="position:relative;height:220px">
+        <canvas id="farmDaysChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Identity Bridge — Sensor to Clinical Match</div>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem">
+        How sensor animals were matched to ReferenceData clinical records.
+        68.3% of sensor animals matched. 31.7% are herd animals outside the study cohort.
+      </p>
+      <div style="position:relative;height:200px">
+        <canvas id="bridgeChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- BEHAVIOUR -->
+<section id="behaviour">
+  <div class="section-eyebrow">Behavioural Time Budgets</div>
+  <div class="section-title">Daily Activity Patterns</div>
+  <p class="section-desc">
+    Each 15-minute window records minutes spent in each behaviour (0–15 min per window).
+    Summed to daily totals. Null means no sensor reading for that animal-day — not zero activity.
+  </p>
+ 
+  <!-- Tabs for behaviour views -->
+  <div class="tabs">
+    <button class="tab active" onclick="showBehTab('dim')">By Days In Milk</button>
+    <button class="tab" onclick="showBehTab('parity')">By Parity</button>
+    <button class="tab" onclick="showBehTab('farm')">By Farm</button>
+    <button class="tab" onclick="showBehTab('precalv')">Pre-Calving</button>
+  </div>
+ 
+  <div id="beh-dim" class="tab-panel active">
+    <div class="controls">
+      <label>Behaviour:</label>
+      <div class="btn-group" id="dimBehBtns">
+        <button class="active" onclick="updateDimChart('Eating')">Eating</button>
+        <button onclick="updateDimChart('Lying')">Lying</button>
+        <button onclick="updateDimChart('Ruminating')">Ruminating</button>
+        <button onclick="updateDimChart('Walking')">Walking</button>
+        <button onclick="updateDimChart('Standing')">Standing</button>
+      </div>
+      <label style="margin-left:1rem">Farm:</label>
+      <select id="dimFarmSelect" onchange="updateDimChart()">
+        <option value="all">All farms</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="card-title" id="dimChartTitle">Average Eating Time — First 100 Days In Milk (all farms)</div>
+      <div style="position:relative;height:300px">
+        <canvas id="dimTrendChart"></canvas>
+      </div>
+    </div>
+  </div>
+ 
+  <div id="beh-parity" class="tab-panel">
+    <div class="card">
+      <div class="card-title">Behaviour by Parity — Average Daily Minutes</div>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:1rem">
+        First-calving cows (Parity 1) show distinctly different patterns from multiparous cows.
+        Click a behaviour to highlight it.
+      </p>
+      <div style="position:relative;height:300px">
+        <canvas id="parityChart"></canvas>
+      </div>
+    </div>
+  </div>
+ 
+  <div id="beh-farm" class="tab-panel">
+    <div class="card">
+      <div class="card-title">Average Daily Behaviour per Farm</div>
+      <div style="position:relative;height:300px">
+        <canvas id="farmBehChart"></canvas>
+      </div>
+    </div>
+  </div>
+ 
+  <div id="beh-precalv" class="tab-panel">
+    <div class="validated-banner">
+      ✓ Validated against van Leerdam et al. (2022) — all four key findings replicated
+    </div>
+    <div class="controls">
+      <label>Behaviour:</label>
+      <div class="btn-group">
+        <button class="active" onclick="updatePrecalvChart('Eating')">Eating</button>
+        <button onclick="updatePrecalvChart('Standing')">Standing</button>
+        <button onclick="updatePrecalvChart('Lying')">Lying</button>
+        <button onclick="updatePrecalvChart('Walking')">Walking</button>
+        <button onclick="updatePrecalvChart('Ruminating')">Ruminating</button>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title" id="precalvTitle">Eating — 21 Days Before Calving by Calcium Status</div>
+        <div style="position:relative;height:260px">
+          <canvas id="precalvChart"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Validated Findings vs van Leerdam et al.</div>
+        <div class="finding">
+          <div class="finding-num">Finding 1 ✓</div>
+          <div class="finding-title">Normocalcaemic cows eat more overall</div>
+          <div class="finding-desc">14.4 min/day more eating. Difference increases from 11.2 to 17.9 min/day closer to calving.</div>
+        </div>
+        <div class="finding">
+          <div class="finding-num">Finding 2 ✓</div>
+          <div class="finding-title">Normocalcaemic cows walk more</div>
+          <div class="finding-desc">3.1 min/day more walking throughout the pre-calving period.</div>
+        </div>
+        <div class="finding">
+          <div class="finding-num">Finding 3 ✓</div>
+          <div class="finding-title">Hypocalcaemic cows stand more in last 5 days</div>
+          <div class="finding-desc">Hypo: 643.5 vs Normo: 630.7 min/day in DIM -5 to -1.</div>
+        </div>
+        <div class="finding">
+          <div class="finding-num">Finding 4 ✓</div>
+          <div class="finding-title">Eating gap widens approaching calving</div>
+          <div class="finding-desc">DIM -21 to -11: 11.2 min gap. DIM -10 to -1: 17.9 min gap.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- CLINICAL -->
+<section id="clinical">
+  <div class="section-eyebrow">Transition Cow Health</div>
+  <div class="section-title">Clinical Measurements at Calving</div>
+  <p class="section-desc">
+    Blood calcium (Ca), β-hydroxybutyric acid (BHBA), body condition score (BCS), and
+    locomotion score collected within 48 hours of calving by a veterinarian.
+    1,648 cow-lactation records across all 8 farms.
+  </p>
+ 
+  <div class="grid-4" style="margin-bottom:1.5rem">
+    <div class="stat-card">
+      <div class="stat-label">Subclinical Ketosis rate</div>
+      <div class="stat-value amber">34.9%</div>
+      <div class="stat-sub">BHBA ≥ 1.2 mmol/L at either sample</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Subclinical Hypocalcaemia</div>
+      <div class="stat-value amber">10.6%</div>
+      <div class="stat-sub">Blood Ca &lt; 2.0 mmol/L</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Difficult Calving</div>
+      <div class="stat-value red">10.9%</div>
+      <div class="stat-sub">CalvingType 3 (Difficult) or 4 (Caesarean)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Retained Placenta</div>
+      <div class="stat-value red">16.3%</div>
+      <div class="stat-sub">Afterbirth retained &gt; 8 hours</div>
+    </div>
+  </div>
+ 
+  <div class="grid-2" style="margin-bottom:1.5rem">
+    <div class="card">
+      <div class="card-title">Clinical Condition Rates per Farm</div>
+      <div class="controls">
+        <label>Condition:</label>
+        <div class="btn-group">
+          <button class="active" onclick="updateClinicalChart('Ketosis')">Ketosis</button>
+          <button onclick="updateClinicalChart('Hypocalcaemia')">Hypocalcaemia</button>
+          <button onclick="updateClinicalChart('Difficult')">Difficult Calving</button>
+          <button onclick="updateClinicalChart('Retained')">Retained Placenta</button>
+        </div>
+      </div>
+      <div style="position:relative;height:220px">
+        <canvas id="clinicalChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Top Clinical Conditions from Farm Notes</div>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem">
+        TranslationGlossary applied to free-text farm notes. 94 terms mapped to 61 boolean flags.
+      </p>
+      <div style="position:relative;height:240px">
+        <canvas id="flagChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- HEAT STRESS -->
+<section id="heat">
+  <div class="section-eyebrow">Temperature-Humidity Index</div>
+  <div class="section-title">Heat Stress Exposure</div>
+  <p class="section-desc">
+    Hourly THI from indoor and outdoor climate sensors. Heat stress threshold: THI &gt; 72.
+    Severe: THI &gt; 80. Research shows behavioural changes from THI 56 — well below the
+    traditionally accepted threshold.
+  </p>
+ 
+  <div class="grid-4" style="margin-bottom:1.5rem">
+    <div class="stat-card">
+      <div class="stat-label">Maximum THI recorded</div>
+      <div class="stat-value red">84.4</div>
+      <div class="stat-sub">Farm G — Severe heat stress</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Peak heat stress days</div>
+      <div class="stat-value amber">157</div>
+      <div class="stat-sub">Farm F — highest exposure</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Severe stress days (all farms)</div>
+      <div class="stat-value red">62</div>
+      <div class="stat-sub">THI &gt; 80 across all farms 2017–2020</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Internal sensor coverage</div>
+      <div class="stat-value green">48%</div>
+      <div class="stat-sub">Farms with indoor THI sensors</div>
+    </div>
+  </div>
+ 
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Mean THI by Month — All Farms Combined</div>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem">
+        Dashed line shows heat stress threshold (THI 72). Summer months (Jun–Aug)
+        consistently exceed the threshold.
+      </p>
+      <div style="position:relative;height:250px">
+        <canvas id="thiMonthChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Heat Stress Days per Farm (THI &gt; 72)</div>
+      <div style="position:relative;height:250px">
+        <canvas id="thiStressChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+
+<!-- REPRODUCTION -->
+<section id="repro">
+  <div class="section-eyebrow">Reproductive Performance</div>
+  <div class="section-title">Calving Intervals & Insemination Patterns</div>
+  <p class="section-desc">
+    Derived from CalendarData: insemination events, heat detection, pregnancy checks,
+    dryoff, and next calving dates. 1,570 of 1,648 lactations have reproductive event data.
+  </p>
+ 
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Reproductive Performance per Farm</div>
+      <div class="controls">
+        <label>Metric:</label>
+        <div class="btn-group">
+          <button class="active" onclick="updateReproChart('DaysOpen')">Days Open</button>
+          <button onclick="updateReproChart('Interval')">Calving Interval</button>
+          <button onclick="updateReproChart('Inseminations')">Avg Inseminations</button>
+        </div>
+      </div>
+      <div style="position:relative;height:240px">
+        <canvas id="reproChart"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Inseminations per Lactation — Distribution</div>
+      <p style="font-size:0.78rem;color:var(--muted);margin-bottom:0.75rem">
+        578 cows (37%) conceived at first insemination. 13 required 10+ inseminations.
+        Target: conception within 2–3 inseminations.
+      </p>
+      <div style="position:relative;height:240px">
+        <canvas id="insemChart"></canvas>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- RESEARCH -->
+<section id="research">
+  <div class="section-eyebrow">Research Applications</div>
+  <div class="section-title">Published Findings & Future Directions</div>
+  <p class="section-desc">
+    GoldMaster provides a single 158-column analysis-ready table. Any research question
+    combining behaviour, clinical outcomes, heat stress, and reproductive performance
+    can be answered directly without additional joins.
+  </p>
+ 
+  <div class="grid-2">
+    <div>
+      <div style="font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1rem">Published Papers Using This Dataset</div>
+      <div class="paper-card">
+        <div class="paper-title">Predicting subclinical hypocalcaemia using leg sensor data and LSTM deep learning</div>
+        <div class="paper-meta">van Leerdam et al. — Computers and Electronics in Agriculture, 2022</div>
+        <div class="paper-finding">AUC 0.71 · LSTM outperforms XGBoost and logistic regression · Parity most important static feature</div>
+      </div>
+      <div class="paper-card">
+        <div class="paper-title">Heat stress effects on dairy cow behaviour measured by leg sensors across 8 commercial farms</div>
+        <div class="paper-meta">Hut et al. — Journal of Dairy Science, 2021</div>
+        <div class="paper-finding">Behavioural changes from THI 56 · Eating most sensitive indicator · Farm-level variation documented</div>
+      </div>
+      <div class="paper-card">
+        <div class="paper-title">Transition cow behavioural patterns linked to reproductive outcomes</div>
+        <div class="paper-meta">SenseOfSensors Consortium — Utrecht University / Cornell University</div>
+        <div class="paper-finding">Pre-calving eating reduction linked to delayed rebreeding · DIM -14 eating time predicts days open</div>
+      </div>
+ 
+      <div style="font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin:1.5rem 0 0.75rem">Future Research Directions</div>
+      <div style="display:flex;flex-wrap:wrap;gap:0.4rem">
+        <span class="badge badge-green">Ketosis early detection</span>
+        <span class="badge badge-green">Lameness prediction</span>
+        <span class="badge badge-green">Heat stress × reproduction</span>
+        <span class="badge badge-amber">Multi-farm transfer learning</span>
+        <span class="badge badge-amber">Parity-specific behaviour models</span>
+        <span class="badge badge-amber">BCS proxy from lying time</span>
+        <span class="badge badge-brown">Real-time alerting thresholds</span>
+        <span class="badge badge-brown">Sensor reassignment detection</span>
+        <span class="badge badge-brown">Pre-calving risk scoring</span>
+      </div>
+    </div>
+ 
+    <div>
+      <div style="font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1rem">GoldMaster Column Groups</div>
+      <div class="card" style="padding:1rem">
+        <table class="data-table">
+          <thead><tr><th>Group</th><th>Columns</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>Identity</td><td><span class="badge badge-brown">6</span></td><td>Farm, animal, join keys</td></tr>
+            <tr><td>Time</td><td><span class="badge badge-brown">8</span></td><td>DIM, phase, season, parity</td></tr>
+            <tr><td>Behaviour 15-min</td><td><span class="badge badge-green">9</span></td><td>Eating, lying, walking, standing, ruminating</td></tr>
+            <tr><td>Behaviour 2-hr</td><td><span class="badge badge-green">4</span></td><td>2-hour window summaries</td></tr>
+            <tr><td>Behaviour daily</td><td><span class="badge badge-green">16</span></td><td>Bout statistics, daily summaries</td></tr>
+            <tr><td>THI</td><td><span class="badge badge-amber">12</span></td><td>Heat stress metrics, internal/external</td></tr>
+            <tr><td>Clinical</td><td><span class="badge badge-amber">17</span></td><td>Calcium, BHBA, BCS, calving type</td></tr>
+            <tr><td>Composite flags</td><td><span class="badge badge-amber">4</span></td><td>Ketosis, hypocalcaemia, difficult calving</td></tr>
+            <tr><td>Reproductive</td><td><span class="badge badge-amber">23</span></td><td>Insemination, pregnancy, calving interval</td></tr>
+            <tr><td>Note flags</td><td><span class="badge badge-brown">61</span></td><td>Boolean flags from farm notes</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+ 
+<!-- PIPELINE -->
+<section id="pipeline">
+  <div class="section-eyebrow">Data Engineering</div>
+  <div class="section-title">Bronze → Silver → Gold Cleaning Pipeline</div>
+  <p class="section-desc">
+    All cleaning logic declared in 5 shared Delta metadata tables — never hardcoded in notebooks.
+    Silver keeps all rows; problems become Warnings array annotations, never silent drops.
+  </p>
+ 
+  <div class="grid-3" style="margin-bottom:1.5rem">
+    <div class="card">
+      <div class="card-title" style="color:#9a7040">⬡ Bronze Layer — Raw Ingestion</div>
+      <div class="step">
+        <div class="step-num" style="background:#9a7040">1</div>
+        <div><div class="step-title">Four source datasets</div>
+        <div class="step-desc">ReferenceData (Parquet), SensorData (Parquet, 23 folders), THI (CSV), CalendarData (CSV, 2 batches). Read-only — never modified.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:#9a7040">2</div>
+        <div><div class="step-title">Calendar data recovery</div>
+        <div class="step-desc">DryoffEvent and CalvingEvent CSVs excluded from original ingestion — re-ingested from blob storage. Provides actual lactation boundary dates.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:#9a7040">3</div>
+        <div><div class="step-title">63 positional columns mapped</div>
+        <div class="step-desc">ReferenceData had no column headers — all 63 columns identified by position and named. ObservationType folder structure documented.</div></div>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <div class="card-title" style="color:#888">⬡ Silver Layer — Cleaning</div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div><div class="step-title">PascalCase normalisation</div>
+        <div class="step-desc">All column names, ObservationType folder names, and metadata fields normalised to PascalCase. Source was camelCase with mixed underscores.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div><div class="step-title">Type casting & range validation</div>
+        <div class="step-desc">Dates → date/timestamp. Numerics → double. BCS capped at 5. Values flagged with Warnings array — never silently dropped.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div><div class="step-title">Deduplication</div>
+        <div class="step-desc">SensorData: 9.5M exact duplicates removed. Calendar batches: 36.7K overlap duplicates removed. Corrupt dates (year &lt; 2000) dropped.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div><div class="step-title">Farm notes → English glossary</div>
+        <div class="step-desc">94 terms in Notes and IndividualAttention columns mapped to English. Applied in Gold as 61 boolean condition flags.</div></div>
+      </div>
+    </div>
+ 
+    <div class="card">
+      <div class="card-title" style="color:#c17f2a">⬡ Gold Layer — Enrichment</div>
+      <div class="step">
+        <div class="step-num" style="background:var(--amber)">1</div>
+        <div><div class="step-title">3-stddev outlier filter</div>
+        <div class="step-desc">Applied per ObservationType before daily aggregation. Translated from original Scala research notebooks. Removes statistically extreme readings.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:var(--amber)">2</div>
+        <div><div class="step-title">1.2B → 2.5M daily pivot</div>
+        <div class="step-desc">Raw sensor readings aggregated to one row per animal per day. Values already in minutes. Impossible daily totals (&gt; 1440 min) nulled.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:var(--amber)">3</div>
+        <div><div class="step-title">Lactation window construction</div>
+        <div class="step-desc">DryoffEvent dates replace estimated LactationEnd for 801 of 1,648 windows. Extended 21 days pre-calving for transition cow analysis.</div></div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:var(--amber)">4</div>
+        <div><div class="step-title">158-column GoldMaster join</div>
+        <div class="step-desc">All 7 gold tables joined via left joins — no data dropped. DaysInMilk, LactationPhase, CalvingSeason, PreCalvingWeek derived columns added.</div></div>
+      </div>
+    </div>
+  </div>
+ 
+  <div class="card">
+    <div class="card-title">Rulebook — Declared Columns per Dataset</div>
+    <div id="rulebook-bars" style="padding:0.5rem 0"></div>
+  </div>
+</section>
+ 
+<!-- PROFILE -->
+<section id="profile">
+  <div class="section-eyebrow">Data Quality</div>
+  <div class="section-title">GoldMaster Profile Report</div>
+  <p class="section-desc">
+    Null rates for key GoldMaster columns across 2,530,267 rows.
+    High null rates are expected — clinical columns only populate within matched lactation windows,
+    which cover 21.2% of total animal-days.
+  </p>
+ 
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Null Rate by Column</div>
+      <div id="null-profile-bars" style="padding:0.25rem 0"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Coverage Explanation</div>
+      <table class="data-table">
+        <thead><tr><th>Column</th><th>Null %</th><th>Expected Reason</th></tr></thead>
+        <tbody>
+          <tr><td>DailyEatingMin15</td><td><span class="badge badge-amber">~39%</span></td><td>Animals without 15-min sensor type</td></tr>
+          <tr><td>MaxTHIExternal</td><td><span class="badge badge-amber">~15%</span></td><td>2016 sensor days precede THI coverage (starts 2017)</td></tr>
+          <tr><td>SubclinicalKetosis</td><td><span class="badge badge-red">~82%</span></td><td>Only within matched lactation windows (21.2%)</td></tr>
+          <tr><td>CalciumLevel</td><td><span class="badge badge-red">~82%</span></td><td>Only within matched lactation windows</td></tr>
+          <tr><td>InseminationCount</td><td><span class="badge badge-red">~80%</span></td><td>Only within matched lactation windows</td></tr>
+          <tr><td>LactationStart</td><td><span class="badge badge-amber">~79%</span></td><td>Sensor days outside lactation window boundaries</td></tr>
+          <tr><td>Parity</td><td><span class="badge badge-amber">~79%</span></td><td>Sensor days outside lactation window boundaries</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+ 
+</div><!-- end .page -->
+ 
+<footer>
+  <strong>SenseOfSensors</strong> — Precision Dairy Farming Analytics Pipeline<br>
+  Utrecht University · Cornell University<br>
+  Dataset collected 2016–2021 · Pipeline rebuilt 2026 · 8 commercial dairy farms
+</footer>
+ 
+<script>
+const D = {"counts": {"sensor_bronze": 1214421979, "sensor_silver": 1204964611, "ref_silver": 1664, "thi_silver": 345869, "calendar_silver": 48814, "lactation_windows": 1648, "identity_bridge": 5072, "daily_behaviour": 2530267, "daily_thi": 11224, "clinical_flags": 1648, "repro_timeline": 1570, "gold_master": 2530267, "farms": 8, "gold_columns": 158}, "farm_stats": [{"HerdIdentifier": "Farm_A", "AnimalDays": 442698, "Animals": 452, "Days": 1826, "AvgEating": 321.7, "AvgLying": 696.2, "AvgRuminating": 506.8, "AvgWalking": 39.9}, {"HerdIdentifier": "Farm_B", "AnimalDays": 234299, "Animals": 155, "Days": 1809, "AvgEating": 313.2, "AvgLying": 678.3, "AvgRuminating": 570.5, "AvgWalking": 36.5}, {"HerdIdentifier": "Farm_C", "AnimalDays": 352666, "Animals": 395, "Days": 1770, "AvgEating": 329.2, "AvgLying": 706.6, "AvgRuminating": 496.7, "AvgWalking": 32.1}, {"HerdIdentifier": "Farm_D", "AnimalDays": 407885, "Animals": 389, "Days": 1826, "AvgEating": 279.1, "AvgLying": 621.1, "AvgRuminating": 455.9, "AvgWalking": 42.0}, {"HerdIdentifier": "Farm_E", "AnimalDays": 213004, "Animals": 192, "Days": 1196, "AvgEating": 347.1, "AvgLying": 656.0, "AvgRuminating": 569.8, "AvgWalking": 42.2}, {"HerdIdentifier": "Farm_F", "AnimalDays": 182389, "Animals": 136, "Days": 1826, "AvgEating": 270.3, "AvgLying": 705.5, "AvgRuminating": 456.1, "AvgWalking": 32.9}, {"HerdIdentifier": "Farm_G", "AnimalDays": 352311, "Animals": 293, "Days": 1826, "AvgEating": 333.7, "AvgLying": 714.6, "AvgRuminating": 562.6, "AvgWalking": 29.8}, {"HerdIdentifier": "Farm_H", "AnimalDays": 345015, "Animals": 308, "Days": 1823, "AvgEating": 389.6, "AvgLying": 687.2, "AvgRuminating": 544.9, "AvgWalking": 35.1}], "thi_stats": [{"HerdIdentifier": "Farm_A", "HeatStressDays": 149, "MaxTHI": 83.85488, "MeanTHI": 52.16}, {"HerdIdentifier": "Farm_B", "HeatStressDays": 138, "MaxTHI": 83.30738, "MeanTHI": 52.1}, {"HerdIdentifier": "Farm_C", "HeatStressDays": 122, "MaxTHI": 84.41523, "MeanTHI": 52.79}, {"HerdIdentifier": "Farm_D", "HeatStressDays": 132, "MaxTHI": 83.63906, "MeanTHI": 52.07}, {"HerdIdentifier": "Farm_E", "HeatStressDays": 149, "MaxTHI": 83.85488, "MeanTHI": 52.16}, {"HerdIdentifier": "Farm_F", "HeatStressDays": 157, "MaxTHI": 83.6592, "MeanTHI": 53.07}, {"HerdIdentifier": "Farm_G", "HeatStressDays": 132, "MaxTHI": 84.43245, "MeanTHI": 52.52}, {"HerdIdentifier": "Farm_H", "HeatStressDays": 138, "MaxTHI": 83.30738, "MeanTHI": 52.1}], "flag_counts": [{"Flag": "NoteMetritis", "Count": 509}, {"Flag": "NoteCalving", "Count": 297}, {"Flag": "NoteKetosis", "Count": 263}, {"Flag": "NoteCalved", "Count": 151}, {"Flag": "NoteTreated", "Count": 81}, {"Flag": "NoteDead", "Count": 80}, {"Flag": "NoteMastitis", "Count": 69}, {"Flag": "NoteMilkFever", "Count": 59}, {"Flag": "NoteTwins", "Count": 57}, {"Flag": "NoteBullCalf", "Count": 45}, {"Flag": "NoteCulled", "Count": 41}, {"Flag": "NoteLame", "Count": 27}, {"Flag": "NoteInflammation", "Count": 26}, {"Flag": "NoteRetainedPlacenta", "Count": 20}, {"Flag": "NoteDiarrhoea", "Count": 20}, {"Flag": "NoteOvarianCyst", "Count": 18}, {"Flag": "NoteAbnormalMilk", "Count": 17}, {"Flag": "NotePregnancy", "Count": 15}, {"Flag": "NoteWhiteDischarge", "Count": 12}, {"Flag": "NoteEndometritis", "Count": 11}], "parity_beh": [{"Parity": 1, "Eating": 370.0, "Lying": 670.2, "Ruminating": 546.7, "Walking": 44.5, "Rows": 110095}, {"Parity": 2, "Eating": 362.0, "Lying": 694.5, "Ruminating": 553.8, "Walking": 37.6, "Rows": 128135}, {"Parity": 3, "Eating": 332.6, "Lying": 680.7, "Ruminating": 550.9, "Walking": 35.6, "Rows": 93901}, {"Parity": 4, "Eating": 300.3, "Lying": 666.5, "Ruminating": 540.9, "Walking": 33.2, "Rows": 59800}, {"Parity": 5, "Eating": 305.7, "Lying": 666.1, "Ruminating": 546.0, "Walking": 33.1, "Rows": 36591}, {"Parity": 6, "Eating": 280.8, "Lying": 679.4, "Ruminating": 543.8, "Walking": 30.8, "Rows": 17359}, {"Parity": 7, "Eating": 265.5, "Lying": 714.0, "Ruminating": 549.9, "Walking": 30.3, "Rows": 8179}, {"Parity": 8, "Eating": 306.3, "Lying": 676.3, "Ruminating": 535.0, "Walking": 32.8, "Rows": 2488}], "precalving": [{"DaysInMilk": -21, "SubclinicalHypocalcaemia": false, "Eating": 350.6, "Lying": 773.5, "Standing": 621.7, "Walking": 28.7, "Ruminating": 518.2}, {"DaysInMilk": -21, "SubclinicalHypocalcaemia": true, "Eating": 342.6, "Lying": 742.6, "Standing": 657.8, "Walking": 27.0, "Ruminating": 520.2}, {"DaysInMilk": -20, "SubclinicalHypocalcaemia": false, "Eating": 352.1, "Lying": 762.5, "Standing": 635.9, "Walking": 29.1, "Ruminating": 516.4}, {"DaysInMilk": -20, "SubclinicalHypocalcaemia": true, "Eating": 340.5, "Lying": 745.6, "Standing": 653.1, "Walking": 25.8, "Ruminating": 518.6}, {"DaysInMilk": -19, "SubclinicalHypocalcaemia": false, "Eating": 347.8, "Lying": 770.3, "Standing": 624.7, "Walking": 28.3, "Ruminating": 507.6}, {"DaysInMilk": -19, "SubclinicalHypocalcaemia": true, "Eating": 337.1, "Lying": 771.2, "Standing": 630.6, "Walking": 24.8, "Ruminating": 525.0}, {"DaysInMilk": -18, "SubclinicalHypocalcaemia": false, "Eating": 344.2, "Lying": 773.9, "Standing": 620.8, "Walking": 28.6, "Ruminating": 513.9}, {"DaysInMilk": -18, "SubclinicalHypocalcaemia": true, "Eating": 341.5, "Lying": 766.3, "Standing": 629.8, "Walking": 24.6, "Ruminating": 511.4}, {"DaysInMilk": -17, "SubclinicalHypocalcaemia": false, "Eating": 351.3, "Lying": 778.4, "Standing": 618.9, "Walking": 28.5, "Ruminating": 509.6}, {"DaysInMilk": -17, "SubclinicalHypocalcaemia": true, "Eating": 344.1, "Lying": 755.1, "Standing": 644.6, "Walking": 25.5, "Ruminating": 513.7}, {"DaysInMilk": -16, "SubclinicalHypocalcaemia": false, "Eating": 344.4, "Lying": 777.2, "Standing": 617.6, "Walking": 28.6, "Ruminating": 514.5}, {"DaysInMilk": -16, "SubclinicalHypocalcaemia": true, "Eating": 339.0, "Lying": 762.1, "Standing": 624.2, "Walking": 25.8, "Ruminating": 512.2}, {"DaysInMilk": -15, "SubclinicalHypocalcaemia": false, "Eating": 346.2, "Lying": 782.7, "Standing": 617.5, "Walking": 28.7, "Ruminating": 512.4}, {"DaysInMilk": -15, "SubclinicalHypocalcaemia": true, "Eating": 340.3, "Lying": 775.7, "Standing": 628.6, "Walking": 25.7, "Ruminating": 523.6}, {"DaysInMilk": -14, "SubclinicalHypocalcaemia": false, "Eating": 344.9, "Lying": 773.7, "Standing": 608.6, "Walking": 29.1, "Ruminating": 514.2}, {"DaysInMilk": -14, "SubclinicalHypocalcaemia": true, "Eating": 336.1, "Lying": 759.5, "Standing": 646.1, "Walking": 26.9, "Ruminating": 512.6}, {"DaysInMilk": -13, "SubclinicalHypocalcaemia": false, "Eating": 351.5, "Lying": 779.7, "Standing": 619.4, "Walking": 29.8, "Ruminating": 502.1}, {"DaysInMilk": -13, "SubclinicalHypocalcaemia": true, "Eating": 333.4, "Lying": 764.4, "Standing": 636.8, "Walking": 26.4, "Ruminating": 513.1}, {"DaysInMilk": -12, "SubclinicalHypocalcaemia": false, "Eating": 351.3, "Lying": 786.1, "Standing": 614.7, "Walking": 29.3, "Ruminating": 513.2}, {"DaysInMilk": -12, "SubclinicalHypocalcaemia": true, "Eating": 327.8, "Lying": 766.0, "Standing": 636.4, "Walking": 26.8, "Ruminating": 507.4}, {"DaysInMilk": -11, "SubclinicalHypocalcaemia": false, "Eating": 344.5, "Lying": 790.4, "Standing": 612.1, "Walking": 29.8, "Ruminating": 510.9}, {"DaysInMilk": -11, "SubclinicalHypocalcaemia": true, "Eating": 328.2, "Lying": 773.9, "Standing": 634.0, "Walking": 26.4, "Ruminating": 514.6}, {"DaysInMilk": -10, "SubclinicalHypocalcaemia": false, "Eating": 343.4, "Lying": 773.0, "Standing": 612.1, "Walking": 30.0, "Ruminating": 502.2}, {"DaysInMilk": -10, "SubclinicalHypocalcaemia": true, "Eating": 326.8, "Lying": 770.6, "Standing": 633.6, "Walking": 26.0, "Ruminating": 510.6}, {"DaysInMilk": -9, "SubclinicalHypocalcaemia": false, "Eating": 346.7, "Lying": 785.4, "Standing": 608.1, "Walking": 29.6, "Ruminating": 504.5}, {"DaysInMilk": -9, "SubclinicalHypocalcaemia": true, "Eating": 332.7, "Lying": 766.8, "Standing": 635.4, "Walking": 27.3, "Ruminating": 504.7}, {"DaysInMilk": -8, "SubclinicalHypocalcaemia": false, "Eating": 345.6, "Lying": 783.6, "Standing": 607.8, "Walking": 30.6, "Ruminating": 500.5}, {"DaysInMilk": -8, "SubclinicalHypocalcaemia": true, "Eating": 327.9, "Lying": 772.1, "Standing": 635.6, "Walking": 26.9, "Ruminating": 508.1}, {"DaysInMilk": -7, "SubclinicalHypocalcaemia": false, "Eating": 346.7, "Lying": 775.8, "Standing": 615.7, "Walking": 31.0, "Ruminating": 497.5}, {"DaysInMilk": -7, "SubclinicalHypocalcaemia": true, "Eating": 333.0, "Lying": 765.6, "Standing": 638.2, "Walking": 27.7, "Ruminating": 503.7}, {"DaysInMilk": -6, "SubclinicalHypocalcaemia": false, "Eating": 342.9, "Lying": 778.3, "Standing": 615.0, "Walking": 31.6, "Ruminating": 494.3}, {"DaysInMilk": -6, "SubclinicalHypocalcaemia": true, "Eating": 327.7, "Lying": 765.8, "Standing": 636.8, "Walking": 27.6, "Ruminating": 504.3}, {"DaysInMilk": -5, "SubclinicalHypocalcaemia": false, "Eating": 339.0, "Lying": 773.3, "Standing": 617.1, "Walking": 31.1, "Ruminating": 487.2}, {"DaysInMilk": -5, "SubclinicalHypocalcaemia": true, "Eating": 322.1, "Lying": 775.7, "Standing": 631.6, "Walking": 27.2, "Ruminating": 493.4}, {"DaysInMilk": -4, "SubclinicalHypocalcaemia": false, "Eating": 337.9, "Lying": 773.5, "Standing": 618.7, "Walking": 31.5, "Ruminating": 487.9}, {"DaysInMilk": -4, "SubclinicalHypocalcaemia": true, "Eating": 319.2, "Lying": 785.6, "Standing": 619.0, "Walking": 26.8, "Ruminating": 486.9}, {"DaysInMilk": -3, "SubclinicalHypocalcaemia": false, "Eating": 335.8, "Lying": 774.3, "Standing": 616.2, "Walking": 31.1, "Ruminating": 487.1}, {"DaysInMilk": -3, "SubclinicalHypocalcaemia": true, "Eating": 312.0, "Lying": 773.9, "Standing": 628.1, "Walking": 27.3, "Ruminating": 483.9}, {"DaysInMilk": -2, "SubclinicalHypocalcaemia": false, "Eating": 329.3, "Lying": 770.6, "Standing": 618.0, "Walking": 31.9, "Ruminating": 479.2}, {"DaysInMilk": -2, "SubclinicalHypocalcaemia": true, "Eating": 301.9, "Lying": 765.8, "Standing": 641.9, "Walking": 27.8, "Ruminating": 472.2}, {"DaysInMilk": -1, "SubclinicalHypocalcaemia": false, "Eating": 324.1, "Lying": 701.7, "Standing": 683.8, "Walking": 38.7, "Ruminating": 476.0}, {"DaysInMilk": -1, "SubclinicalHypocalcaemia": true, "Eating": 281.1, "Lying": 715.1, "Standing": 686.7, "Walking": 32.8, "Ruminating": 458.2}], "repro_stats": [{"HerdIdentifier": "Farm_F", "AvgInseminations": 1.51, "AvgDaysOpen": 128.2, "AvgCalvingInterval": 350.5, "ReproSuccessCount": 85, "Total": 124}, {"HerdIdentifier": "Farm_G", "AvgInseminations": 2.04, "AvgDaysOpen": 141.7, "AvgCalvingInterval": 345.4, "ReproSuccessCount": 165, "Total": 245}, {"HerdIdentifier": "Farm_H", "AvgInseminations": 2.04, "AvgDaysOpen": 123.3, "AvgCalvingInterval": 371.7, "ReproSuccessCount": 102, "Total": 166}, {"HerdIdentifier": "Farm_D", "AvgInseminations": 2.32, "AvgDaysOpen": 149.5, "AvgCalvingInterval": 328.4, "ReproSuccessCount": 151, "Total": 195}, {"HerdIdentifier": "Farm_A", "AvgInseminations": 3.82, "AvgDaysOpen": 144.4, "AvgCalvingInterval": 362.7, "ReproSuccessCount": 114, "Total": 302}, {"HerdIdentifier": "Farm_E", "AvgInseminations": 2.48, "AvgDaysOpen": 143.6, "AvgCalvingInterval": 342.1, "ReproSuccessCount": 120, "Total": 150}, {"HerdIdentifier": "Farm_C", "AvgInseminations": 2.05, "AvgDaysOpen": 130.2, "AvgCalvingInterval": 370.1, "ReproSuccessCount": 97, "Total": 193}, {"HerdIdentifier": "Farm_B", "AvgInseminations": 2.09, "AvgDaysOpen": 143.9, "AvgCalvingInterval": 353.2, "ReproSuccessCount": 140, "Total": 195}], "clinical_rates": [{"HerdIdentifier": "Farm_F", "Total": 131, "Ketosis": 94, "Hypocalcaemia": 5, "DifficultCalving": 17, "RetainedPlacenta": 14, "KetosisRate": 71.8, "HypocalcaemiaRate": 3.8, "DifficultRate": 13.0, "RetainedRate": 10.7}, {"HerdIdentifier": "Farm_G", "Total": 251, "Ketosis": 85, "Hypocalcaemia": 15, "DifficultCalving": 17, "RetainedPlacenta": 42, "KetosisRate": 33.9, "HypocalcaemiaRate": 6.0, "DifficultRate": 6.8, "RetainedRate": 16.7}, {"HerdIdentifier": "Farm_H", "Total": 184, "Ketosis": 70, "Hypocalcaemia": 44, "DifficultCalving": 21, "RetainedPlacenta": 0, "KetosisRate": 38.0, "HypocalcaemiaRate": 23.9, "DifficultRate": 11.4, "RetainedRate": 0.0}, {"HerdIdentifier": "Farm_A", "Total": 316, "Ketosis": 81, "Hypocalcaemia": 21, "DifficultCalving": 35, "RetainedPlacenta": 71, "KetosisRate": 25.6, "HypocalcaemiaRate": 6.6, "DifficultRate": 11.1, "RetainedRate": 22.5}, {"HerdIdentifier": "Farm_D", "Total": 198, "Ketosis": 42, "Hypocalcaemia": 34, "DifficultCalving": 5, "RetainedPlacenta": 57, "KetosisRate": 21.2, "HypocalcaemiaRate": 17.2, "DifficultRate": 2.5, "RetainedRate": 28.8}, {"HerdIdentifier": "Farm_E", "Total": 151, "Ketosis": 39, "Hypocalcaemia": 10, "DifficultCalving": 4, "RetainedPlacenta": 6, "KetosisRate": 25.8, "HypocalcaemiaRate": 6.6, "DifficultRate": 2.6, "RetainedRate": 4.0}, {"HerdIdentifier": "Farm_C", "Total": 214, "Ketosis": 83, "Hypocalcaemia": 34, "DifficultCalving": 36, "RetainedPlacenta": 18, "KetosisRate": 38.8, "HypocalcaemiaRate": 15.9, "DifficultRate": 16.8, "RetainedRate": 8.4}, {"HerdIdentifier": "Farm_B", "Total": 203, "Ketosis": 81, "Hypocalcaemia": 12, "DifficultCalving": 45, "RetainedPlacenta": 61, "KetosisRate": 39.9, "HypocalcaemiaRate": 5.9, "DifficultRate": 22.2, "RetainedRate": 30.0}], "dim_trend": [{"DaysInMilk": 0, "Eating": 318.8, "Lying": 638.3, "Ruminating": 356.3, "Walking": 50.0, "Standing": 732.2}, {"DaysInMilk": 1, "Eating": 313.2, "Lying": 560.5, "Ruminating": 444.5, "Walking": 56.3, "Standing": 803.5}, {"DaysInMilk": 2, "Eating": 304.8, "Lying": 605.0, "Ruminating": 491.9, "Walking": 52.7, "Standing": 765.6}, {"DaysInMilk": 3, "Eating": 309.7, "Lying": 634.3, "Ruminating": 512.7, "Walking": 49.7, "Standing": 743.5}, {"DaysInMilk": 4, "Eating": 308.7, "Lying": 656.5, "Ruminating": 528.8, "Walking": 46.5, "Standing": 723.7}, {"DaysInMilk": 5, "Eating": 307.6, "Lying": 645.8, "Ruminating": 535.5, "Walking": 44.3, "Standing": 740.4}, {"DaysInMilk": 6, "Eating": 310.6, "Lying": 642.9, "Ruminating": 544.3, "Walking": 42.4, "Standing": 750.1}, {"DaysInMilk": 7, "Eating": 312.8, "Lying": 633.5, "Ruminating": 542.6, "Walking": 41.7, "Standing": 756.8}, {"DaysInMilk": 8, "Eating": 313.5, "Lying": 628.5, "Ruminating": 549.6, "Walking": 41.5, "Standing": 762.9}, {"DaysInMilk": 9, "Eating": 316.4, "Lying": 623.8, "Ruminating": 551.3, "Walking": 41.7, "Standing": 765.8}, {"DaysInMilk": 10, "Eating": 315.8, "Lying": 621.7, "Ruminating": 546.8, "Walking": 41.6, "Standing": 766.3}, {"DaysInMilk": 11, "Eating": 317.0, "Lying": 625.2, "Ruminating": 552.5, "Walking": 41.2, "Standing": 765.3}, {"DaysInMilk": 12, "Eating": 319.9, "Lying": 623.2, "Ruminating": 552.5, "Walking": 40.9, "Standing": 769.5}, {"DaysInMilk": 13, "Eating": 323.5, "Lying": 624.6, "Ruminating": 552.4, "Walking": 40.4, "Standing": 767.4}, {"DaysInMilk": 14, "Eating": 324.4, "Lying": 620.2, "Ruminating": 551.2, "Walking": 40.9, "Standing": 771.1}, {"DaysInMilk": 15, "Eating": 323.4, "Lying": 616.8, "Ruminating": 552.6, "Walking": 40.6, "Standing": 774.7}, {"DaysInMilk": 16, "Eating": 327.4, "Lying": 620.4, "Ruminating": 553.5, "Walking": 40.3, "Standing": 770.8}, {"DaysInMilk": 17, "Eating": 324.7, "Lying": 624.8, "Ruminating": 555.0, "Walking": 39.5, "Standing": 767.7}, {"DaysInMilk": 18, "Eating": 329.3, "Lying": 621.8, "Ruminating": 558.3, "Walking": 40.0, "Standing": 770.7}, {"DaysInMilk": 19, "Eating": 328.8, "Lying": 615.6, "Ruminating": 560.2, "Walking": 39.8, "Standing": 778.5}, {"DaysInMilk": 20, "Eating": 328.7, "Lying": 614.4, "Ruminating": 557.8, "Walking": 40.2, "Standing": 778.0}, {"DaysInMilk": 21, "Eating": 329.8, "Lying": 612.1, "Ruminating": 556.5, "Walking": 40.2, "Standing": 778.8}, {"DaysInMilk": 22, "Eating": 327.7, "Lying": 613.0, "Ruminating": 557.7, "Walking": 40.3, "Standing": 779.5}, {"DaysInMilk": 23, "Eating": 330.2, "Lying": 614.3, "Ruminating": 559.6, "Walking": 40.4, "Standing": 779.9}, {"DaysInMilk": 24, "Eating": 329.2, "Lying": 614.8, "Ruminating": 561.2, "Walking": 39.9, "Standing": 775.0}, {"DaysInMilk": 25, "Eating": 328.2, "Lying": 615.8, "Ruminating": 559.7, "Walking": 40.1, "Standing": 777.0}, {"DaysInMilk": 26, "Eating": 331.2, "Lying": 614.7, "Ruminating": 560.4, "Walking": 40.1, "Standing": 779.2}, {"DaysInMilk": 27, "Eating": 329.3, "Lying": 617.1, "Ruminating": 560.7, "Walking": 39.5, "Standing": 777.8}, {"DaysInMilk": 28, "Eating": 328.7, "Lying": 615.5, "Ruminating": 560.2, "Walking": 39.9, "Standing": 776.1}, {"DaysInMilk": 29, "Eating": 328.9, "Lying": 620.1, "Ruminating": 561.0, "Walking": 39.8, "Standing": 773.1}, {"DaysInMilk": 30, "Eating": 331.6, "Lying": 619.3, "Ruminating": 558.3, "Walking": 40.0, "Standing": 773.1}, {"DaysInMilk": 31, "Eating": 329.7, "Lying": 620.2, "Ruminating": 559.2, "Walking": 40.4, "Standing": 772.5}, {"DaysInMilk": 32, "Eating": 331.3, "Lying": 622.4, "Ruminating": 560.8, "Walking": 40.0, "Standing": 771.3}, {"DaysInMilk": 33, "Eating": 330.0, "Lying": 625.1, "Ruminating": 561.0, "Walking": 39.9, "Standing": 768.1}, {"DaysInMilk": 34, "Eating": 331.5, "Lying": 622.8, "Ruminating": 558.4, "Walking": 40.2, "Standing": 767.7}, {"DaysInMilk": 35, "Eating": 332.5, "Lying": 623.4, "Ruminating": 560.2, "Walking": 39.8, "Standing": 769.2}, {"DaysInMilk": 36, "Eating": 333.2, "Lying": 623.6, "Ruminating": 559.6, "Walking": 40.2, "Standing": 767.9}, {"DaysInMilk": 37, "Eating": 333.6, "Lying": 622.6, "Ruminating": 561.1, "Walking": 40.3, "Standing": 770.0}, {"DaysInMilk": 38, "Eating": 332.1, "Lying": 624.3, "Ruminating": 562.3, "Walking": 39.9, "Standing": 768.0}, {"DaysInMilk": 39, "Eating": 332.5, "Lying": 627.0, "Ruminating": 564.0, "Walking": 39.5, "Standing": 765.5}, {"DaysInMilk": 40, "Eating": 331.4, "Lying": 624.8, "Ruminating": 560.8, "Walking": 39.8, "Standing": 767.1}, {"DaysInMilk": 41, "Eating": 331.5, "Lying": 624.7, "Ruminating": 562.3, "Walking": 39.6, "Standing": 767.9}, {"DaysInMilk": 42, "Eating": 333.5, "Lying": 622.4, "Ruminating": 562.8, "Walking": 40.0, "Standing": 768.4}, {"DaysInMilk": 43, "Eating": 334.7, "Lying": 627.9, "Ruminating": 564.9, "Walking": 39.4, "Standing": 763.9}, {"DaysInMilk": 44, "Eating": 333.7, "Lying": 622.2, "Ruminating": 562.4, "Walking": 39.6, "Standing": 767.5}, {"DaysInMilk": 45, "Eating": 331.4, "Lying": 627.4, "Ruminating": 563.4, "Walking": 39.5, "Standing": 765.5}, {"DaysInMilk": 46, "Eating": 335.4, "Lying": 628.5, "Ruminating": 563.5, "Walking": 39.9, "Standing": 764.0}, {"DaysInMilk": 47, "Eating": 335.8, "Lying": 628.8, "Ruminating": 563.5, "Walking": 39.7, "Standing": 763.2}, {"DaysInMilk": 48, "Eating": 334.6, "Lying": 626.8, "Ruminating": 566.1, "Walking": 39.3, "Standing": 767.5}, {"DaysInMilk": 49, "Eating": 336.3, "Lying": 628.6, "Ruminating": 565.0, "Walking": 39.8, "Standing": 764.6}, {"DaysInMilk": 50, "Eating": 338.3, "Lying": 624.9, "Ruminating": 566.4, "Walking": 40.1, "Standing": 767.3}, {"DaysInMilk": 51, "Eating": 335.0, "Lying": 623.4, "Ruminating": 566.6, "Walking": 40.1, "Standing": 765.8}, {"DaysInMilk": 52, "Eating": 334.8, "Lying": 631.4, "Ruminating": 566.0, "Walking": 39.7, "Standing": 761.6}, {"DaysInMilk": 53, "Eating": 338.5, "Lying": 629.9, "Ruminating": 564.6, "Walking": 39.7, "Standing": 761.4}, {"DaysInMilk": 54, "Eating": 336.3, "Lying": 626.5, "Ruminating": 563.2, "Walking": 39.8, "Standing": 765.6}, {"DaysInMilk": 55, "Eating": 337.0, "Lying": 627.0, "Ruminating": 565.1, "Walking": 40.1, "Standing": 765.3}, {"DaysInMilk": 56, "Eating": 335.2, "Lying": 626.5, "Ruminating": 566.5, "Walking": 39.7, "Standing": 763.4}, {"DaysInMilk": 57, "Eating": 338.2, "Lying": 630.2, "Ruminating": 563.9, "Walking": 39.9, "Standing": 759.7}, {"DaysInMilk": 58, "Eating": 336.9, "Lying": 634.4, "Ruminating": 567.6, "Walking": 39.3, "Standing": 755.7}, {"DaysInMilk": 59, "Eating": 336.1, "Lying": 635.0, "Ruminating": 565.3, "Walking": 39.1, "Standing": 753.7}, {"DaysInMilk": 60, "Eating": 335.8, "Lying": 634.6, "Ruminating": 566.3, "Walking": 39.7, "Standing": 754.9}, {"DaysInMilk": 61, "Eating": 339.0, "Lying": 630.1, "Ruminating": 565.3, "Walking": 39.4, "Standing": 760.8}, {"DaysInMilk": 62, "Eating": 337.0, "Lying": 629.6, "Ruminating": 566.8, "Walking": 39.5, "Standing": 759.9}, {"DaysInMilk": 63, "Eating": 339.9, "Lying": 636.1, "Ruminating": 566.7, "Walking": 39.2, "Standing": 755.6}, {"DaysInMilk": 64, "Eating": 338.7, "Lying": 636.9, "Ruminating": 569.0, "Walking": 39.1, "Standing": 756.6}, {"DaysInMilk": 65, "Eating": 337.5, "Lying": 635.2, "Ruminating": 567.1, "Walking": 39.0, "Standing": 758.1}, {"DaysInMilk": 66, "Eating": 338.4, "Lying": 634.3, "Ruminating": 568.4, "Walking": 39.5, "Standing": 758.1}, {"DaysInMilk": 67, "Eating": 339.0, "Lying": 637.0, "Ruminating": 566.5, "Walking": 39.9, "Standing": 755.7}, {"DaysInMilk": 68, "Eating": 336.4, "Lying": 640.1, "Ruminating": 564.9, "Walking": 39.1, "Standing": 753.2}, {"DaysInMilk": 69, "Eating": 339.0, "Lying": 634.1, "Ruminating": 567.5, "Walking": 39.2, "Standing": 758.5}, {"DaysInMilk": 70, "Eating": 338.7, "Lying": 642.7, "Ruminating": 566.8, "Walking": 39.0, "Standing": 750.9}, {"DaysInMilk": 71, "Eating": 335.9, "Lying": 641.0, "Ruminating": 568.5, "Walking": 38.9, "Standing": 753.4}, {"DaysInMilk": 72, "Eating": 336.8, "Lying": 644.2, "Ruminating": 566.9, "Walking": 38.8, "Standing": 748.6}, {"DaysInMilk": 73, "Eating": 340.2, "Lying": 642.9, "Ruminating": 568.8, "Walking": 38.3, "Standing": 751.4}, {"DaysInMilk": 74, "Eating": 339.7, "Lying": 640.0, "Ruminating": 567.9, "Walking": 38.5, "Standing": 753.1}, {"DaysInMilk": 75, "Eating": 335.9, "Lying": 638.2, "Ruminating": 568.4, "Walking": 38.6, "Standing": 755.5}, {"DaysInMilk": 76, "Eating": 339.8, "Lying": 638.9, "Ruminating": 567.8, "Walking": 38.6, "Standing": 752.6}, {"DaysInMilk": 77, "Eating": 340.7, "Lying": 641.2, "Ruminating": 568.9, "Walking": 38.5, "Standing": 752.5}, {"DaysInMilk": 78, "Eating": 340.6, "Lying": 642.0, "Ruminating": 568.7, "Walking": 38.9, "Standing": 752.4}, {"DaysInMilk": 79, "Eating": 340.0, "Lying": 645.9, "Ruminating": 570.3, "Walking": 38.9, "Standing": 746.8}, {"DaysInMilk": 80, "Eating": 337.6, "Lying": 640.2, "Ruminating": 568.0, "Walking": 39.1, "Standing": 752.9}, {"DaysInMilk": 81, "Eating": 342.7, "Lying": 641.6, "Ruminating": 566.5, "Walking": 39.0, "Standing": 750.5}, {"DaysInMilk": 82, "Eating": 341.8, "Lying": 645.5, "Ruminating": 569.7, "Walking": 38.7, "Standing": 749.5}, {"DaysInMilk": 83, "Eating": 340.9, "Lying": 645.8, "Ruminating": 568.3, "Walking": 38.4, "Standing": 746.5}, {"DaysInMilk": 84, "Eating": 341.4, "Lying": 647.2, "Ruminating": 570.7, "Walking": 38.9, "Standing": 744.6}, {"DaysInMilk": 85, "Eating": 341.1, "Lying": 648.7, "Ruminating": 566.8, "Walking": 38.8, "Standing": 745.8}, {"DaysInMilk": 86, "Eating": 340.5, "Lying": 649.2, "Ruminating": 566.2, "Walking": 38.6, "Standing": 742.5}, {"DaysInMilk": 87, "Eating": 341.4, "Lying": 648.3, "Ruminating": 569.6, "Walking": 38.3, "Standing": 746.4}, {"DaysInMilk": 88, "Eating": 343.0, "Lying": 644.8, "Ruminating": 568.8, "Walking": 38.7, "Standing": 746.9}, {"DaysInMilk": 89, "Eating": 341.4, "Lying": 650.4, "Ruminating": 567.3, "Walking": 38.4, "Standing": 740.7}, {"DaysInMilk": 90, "Eating": 342.4, "Lying": 653.5, "Ruminating": 568.7, "Walking": 38.3, "Standing": 741.2}, {"DaysInMilk": 91, "Eating": 342.2, "Lying": 648.9, "Ruminating": 568.1, "Walking": 38.6, "Standing": 744.5}, {"DaysInMilk": 92, "Eating": 341.5, "Lying": 652.9, "Ruminating": 567.1, "Walking": 38.6, "Standing": 739.7}, {"DaysInMilk": 93, "Eating": 342.5, "Lying": 651.0, "Ruminating": 566.5, "Walking": 38.9, "Standing": 744.5}, {"DaysInMilk": 94, "Eating": 340.2, "Lying": 651.3, "Ruminating": 566.2, "Walking": 38.4, "Standing": 742.1}, {"DaysInMilk": 95, "Eating": 340.5, "Lying": 653.3, "Ruminating": 566.0, "Walking": 38.2, "Standing": 741.2}, {"DaysInMilk": 96, "Eating": 341.4, "Lying": 650.4, "Ruminating": 566.0, "Walking": 38.9, "Standing": 741.7}, {"DaysInMilk": 97, "Eating": 342.4, "Lying": 657.8, "Ruminating": 571.0, "Walking": 38.1, "Standing": 736.9}, {"DaysInMilk": 98, "Eating": 343.3, "Lying": 653.8, "Ruminating": 566.9, "Walking": 38.2, "Standing": 739.2}, {"DaysInMilk": 99, "Eating": 343.1, "Lying": 655.9, "Ruminating": 566.7, "Walking": 38.5, "Standing": 736.2}, {"DaysInMilk": 100, "Eating": 344.0, "Lying": 653.7, "Ruminating": 567.8, "Walking": 38.5, "Standing": 741.7}], "thi_monthly": [{"Month": 1, "AvgMaxTHI": 44.21, "AvgMeanTHI": 39.58, "HeatStressDays": 0}, {"Month": 2, "AvgMaxTHI": 48.01, "AvgMeanTHI": 41.62, "HeatStressDays": 0}, {"Month": 3, "AvgMaxTHI": 52.81, "AvgMeanTHI": 45.9, "HeatStressDays": 0}, {"Month": 4, "AvgMaxTHI": 59.46, "AvgMeanTHI": 51.44, "HeatStressDays": 23}, {"Month": 5, "AvgMaxTHI": 64.21, "AvgMeanTHI": 56.65, "HeatStressDays": 115}, {"Month": 6, "AvgMaxTHI": 69.0, "AvgMeanTHI": 62.84, "HeatStressDays": 280}, {"Month": 7, "AvgMaxTHI": 69.99, "AvgMeanTHI": 63.68, "HeatStressDays": 310}, {"Month": 8, "AvgMaxTHI": 70.55, "AvgMeanTHI": 63.96, "HeatStressDays": 322}, {"Month": 9, "AvgMaxTHI": 64.73, "AvgMeanTHI": 57.49, "HeatStressDays": 56}, {"Month": 10, "AvgMaxTHI": 59.37, "AvgMeanTHI": 53.48, "HeatStressDays": 11}, {"Month": 11, "AvgMaxTHI": 50.09, "AvgMeanTHI": 44.58, "HeatStressDays": 0}, {"Month": 12, "AvgMaxTHI": 46.25, "AvgMeanTHI": 42.27, "HeatStressDays": 0}], "bridge_stats": [{"JoinMethod": "NoMatch", "count": 1625}, {"JoinMethod": "AnimalIdentifier", "count": 2019}, {"JoinMethod": "LifeNumber", "count": 1428}], "null_profile": [{"Column": "DailyEatingMin15", "NullPct": 38.7}, {"Column": "DailyLyingMin15", "NullPct": 40.3}, {"Column": "DailyRuminatingMin15", "NullPct": 38.7}, {"Column": "MaxTHIExternal", "NullPct": 14.5}, {"Column": "SubclinicalKetosis", "NullPct": 81.7}, {"Column": "CalciumLevel", "NullPct": 90.4}, {"Column": "InseminationCount", "NullPct": 79.3}, {"Column": "LactationStart", "NullPct": 78.3}, {"Column": "Parity", "NullPct": 78.3}], "farm_dim": [{"HerdIdentifier": "Farm_A", "DaysInMilk": 0, "Eating": 279.6, "Lying": 659.6, "Ruminating": 333.9}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 1, "Eating": 282.5, "Lying": 540.6, "Ruminating": 411.2}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 2, "Eating": 287.8, "Lying": 594.7, "Ruminating": 474.9}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 3, "Eating": 294.3, "Lying": 631.3, "Ruminating": 497.4}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 4, "Eating": 299.0, "Lying": 666.1, "Ruminating": 507.1}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 5, "Eating": 300.4, "Lying": 650.6, "Ruminating": 512.2}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 6, "Eating": 302.2, "Lying": 643.1, "Ruminating": 524.9}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 7, "Eating": 308.9, "Lying": 636.9, "Ruminating": 515.4}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 8, "Eating": 304.6, "Lying": 621.8, "Ruminating": 516.3}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 9, "Eating": 305.9, "Lying": 623.2, "Ruminating": 520.8}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 10, "Eating": 308.8, "Lying": 616.5, "Ruminating": 512.4}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 11, "Eating": 306.7, "Lying": 625.6, "Ruminating": 519.0}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 12, "Eating": 309.0, "Lying": 630.1, "Ruminating": 519.4}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 13, "Eating": 313.6, "Lying": 641.7, "Ruminating": 516.4}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 14, "Eating": 319.5, "Lying": 627.5, "Ruminating": 518.9}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 15, "Eating": 313.2, "Lying": 629.5, "Ruminating": 522.6}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 16, "Eating": 320.7, "Lying": 630.1, "Ruminating": 514.5}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 17, "Eating": 318.2, "Lying": 637.3, "Ruminating": 518.6}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 18, "Eating": 320.2, "Lying": 633.8, "Ruminating": 524.0}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 19, "Eating": 325.7, "Lying": 633.9, "Ruminating": 526.9}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 20, "Eating": 322.7, "Lying": 631.0, "Ruminating": 526.9}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 21, "Eating": 321.1, "Lying": 630.2, "Ruminating": 521.0}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 22, "Eating": 320.1, "Lying": 631.1, "Ruminating": 524.1}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 23, "Eating": 317.0, "Lying": 630.7, "Ruminating": 523.0}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 24, "Eating": 319.5, "Lying": 636.4, "Ruminating": 519.6}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 25, "Eating": 315.4, "Lying": 633.0, "Ruminating": 521.7}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 26, "Eating": 324.7, "Lying": 631.2, "Ruminating": 520.5}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 27, "Eating": 319.5, "Lying": 631.0, "Ruminating": 523.2}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 28, "Eating": 317.9, "Lying": 635.0, "Ruminating": 525.4}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 29, "Eating": 317.6, "Lying": 633.0, "Ruminating": 520.3}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 30, "Eating": 321.2, "Lying": 638.2, "Ruminating": 519.2}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 31, "Eating": 319.0, "Lying": 645.2, "Ruminating": 518.1}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 32, "Eating": 318.2, "Lying": 637.6, "Ruminating": 514.8}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 33, "Eating": 315.7, "Lying": 644.1, "Ruminating": 518.3}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 34, "Eating": 316.7, "Lying": 642.6, "Ruminating": 514.3}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 35, "Eating": 318.4, "Lying": 647.7, "Ruminating": 515.4}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 36, "Eating": 313.9, "Lying": 652.2, "Ruminating": 516.5}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 37, "Eating": 315.1, "Lying": 655.4, "Ruminating": 515.7}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 38, "Eating": 313.7, "Lying": 654.3, "Ruminating": 520.3}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 39, "Eating": 310.6, "Lying": 662.7, "Ruminating": 523.2}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 40, "Eating": 312.6, "Lying": 657.5, "Ruminating": 516.9}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 41, "Eating": 313.1, "Lying": 652.1, "Ruminating": 517.4}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 42, "Eating": 311.1, "Lying": 656.5, "Ruminating": 518.9}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 43, "Eating": 311.8, "Lying": 665.0, "Ruminating": 515.7}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 44, "Eating": 310.1, "Lying": 652.2, "Ruminating": 514.0}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 45, "Eating": 308.3, "Lying": 653.1, "Ruminating": 519.4}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 46, "Eating": 312.9, "Lying": 655.5, "Ruminating": 518.1}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 47, "Eating": 308.3, "Lying": 662.2, "Ruminating": 512.3}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 48, "Eating": 311.8, "Lying": 657.6, "Ruminating": 519.9}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 49, "Eating": 311.6, "Lying": 675.7, "Ruminating": 517.5}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 50, "Eating": 315.5, "Lying": 661.7, "Ruminating": 520.1}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 51, "Eating": 313.1, "Lying": 653.3, "Ruminating": 528.3}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 52, "Eating": 312.3, "Lying": 664.4, "Ruminating": 522.5}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 53, "Eating": 319.2, "Lying": 663.0, "Ruminating": 522.2}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 54, "Eating": 310.4, "Lying": 658.8, "Ruminating": 528.6}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 55, "Eating": 314.3, "Lying": 663.4, "Ruminating": 521.8}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 56, "Eating": 312.7, "Lying": 665.8, "Ruminating": 522.8}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 57, "Eating": 314.7, "Lying": 667.0, "Ruminating": 515.3}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 58, "Eating": 311.9, "Lying": 682.9, "Ruminating": 521.1}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 59, "Eating": 315.9, "Lying": 678.0, "Ruminating": 522.3}, {"HerdIdentifier": "Farm_A", "DaysInMilk": 60, "Eating": 311.9, "Lying": 671.3, "Ruminating": 522.1}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 0, "Eating": 292.7, "Lying": 679.5, "Ruminating": 390.2}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 1, "Eating": 324.1, "Lying": 554.5, "Ruminating": 495.7}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 2, "Eating": 326.9, "Lying": 569.3, "Ruminating": 517.8}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 3, "Eating": 325.2, "Lying": 622.0, "Ruminating": 538.4}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 4, "Eating": 309.9, "Lying": 671.8, "Ruminating": 547.4}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 5, "Eating": 308.5, "Lying": 654.2, "Ruminating": 553.7}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 6, "Eating": 307.9, "Lying": 654.2, "Ruminating": 558.9}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 7, "Eating": 301.8, "Lying": 640.7, "Ruminating": 565.5}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 8, "Eating": 298.3, "Lying": 638.6, "Ruminating": 570.1}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 9, "Eating": 306.9, "Lying": 625.6, "Ruminating": 563.5}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 10, "Eating": 305.7, "Lying": 638.0, "Ruminating": 562.0}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 11, "Eating": 308.2, "Lying": 629.3, "Ruminating": 571.6}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 12, "Eating": 312.8, "Lying": 628.5, "Ruminating": 570.3}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 13, "Eating": 317.2, "Lying": 624.4, "Ruminating": 570.0}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 14, "Eating": 302.1, "Lying": 626.5, "Ruminating": 566.7}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 15, "Eating": 307.1, "Lying": 622.3, "Ruminating": 571.5}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 16, "Eating": 309.8, "Lying": 615.1, "Ruminating": 570.3}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 17, "Eating": 306.7, "Lying": 618.5, "Ruminating": 567.3}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 18, "Eating": 306.0, "Lying": 625.9, "Ruminating": 576.2}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 19, "Eating": 304.9, "Lying": 616.7, "Ruminating": 572.2}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 20, "Eating": 300.3, "Lying": 613.9, "Ruminating": 571.3}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 21, "Eating": 304.9, "Lying": 610.0, "Ruminating": 568.9}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 22, "Eating": 301.5, "Lying": 618.2, "Ruminating": 575.9}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 23, "Eating": 301.4, "Lying": 605.5, "Ruminating": 576.2}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 24, "Eating": 296.9, "Lying": 608.5, "Ruminating": 575.6}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 25, "Eating": 300.5, "Lying": 614.3, "Ruminating": 573.0}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 26, "Eating": 301.8, "Lying": 607.4, "Ruminating": 577.9}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 27, "Eating": 302.9, "Lying": 601.9, "Ruminating": 577.4}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 28, "Eating": 295.3, "Lying": 600.2, "Ruminating": 572.6}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 29, "Eating": 294.6, "Lying": 599.3, "Ruminating": 575.7}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 30, "Eating": 298.2, "Lying": 615.3, "Ruminating": 564.8}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 31, "Eating": 299.8, "Lying": 605.0, "Ruminating": 576.6}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 32, "Eating": 302.0, "Lying": 618.0, "Ruminating": 574.8}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 33, "Eating": 302.0, "Lying": 616.9, "Ruminating": 572.2}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 34, "Eating": 298.9, "Lying": 609.1, "Ruminating": 569.8}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 35, "Eating": 307.2, "Lying": 610.4, "Ruminating": 575.0}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 36, "Eating": 305.9, "Lying": 605.4, "Ruminating": 577.3}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 37, "Eating": 304.5, "Lying": 610.3, "Ruminating": 571.2}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 38, "Eating": 303.1, "Lying": 598.8, "Ruminating": 579.1}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 39, "Eating": 297.2, "Lying": 612.6, "Ruminating": 582.9}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 40, "Eating": 304.5, "Lying": 612.1, "Ruminating": 577.7}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 41, "Eating": 304.4, "Lying": 601.6, "Ruminating": 575.1}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 42, "Eating": 307.3, "Lying": 618.6, "Ruminating": 581.1}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 43, "Eating": 310.3, "Lying": 610.2, "Ruminating": 588.7}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 44, "Eating": 304.3, "Lying": 609.5, "Ruminating": 588.2}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 45, "Eating": 302.3, "Lying": 615.1, "Ruminating": 584.6}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 46, "Eating": 315.8, "Lying": 605.9, "Ruminating": 590.4}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 47, "Eating": 313.9, "Lying": 613.6, "Ruminating": 591.8}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 48, "Eating": 310.3, "Lying": 606.5, "Ruminating": 585.8}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 49, "Eating": 315.5, "Lying": 619.6, "Ruminating": 593.0}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 50, "Eating": 313.1, "Lying": 602.3, "Ruminating": 593.1}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 51, "Eating": 314.2, "Lying": 605.8, "Ruminating": 589.5}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 52, "Eating": 311.1, "Lying": 614.2, "Ruminating": 582.9}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 53, "Eating": 320.0, "Lying": 617.8, "Ruminating": 586.9}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 54, "Eating": 315.5, "Lying": 610.1, "Ruminating": 583.0}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 55, "Eating": 318.6, "Lying": 615.5, "Ruminating": 586.1}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 56, "Eating": 312.6, "Lying": 605.1, "Ruminating": 592.6}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 57, "Eating": 317.4, "Lying": 607.1, "Ruminating": 590.0}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 58, "Eating": 315.8, "Lying": 600.9, "Ruminating": 590.9}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 59, "Eating": 306.4, "Lying": 624.3, "Ruminating": 592.4}, {"HerdIdentifier": "Farm_B", "DaysInMilk": 60, "Eating": 311.2, "Lying": 613.1, "Ruminating": 588.6}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 0, "Eating": 313.0, "Lying": 707.1, "Ruminating": 272.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 1, "Eating": 283.6, "Lying": 709.3, "Ruminating": 347.2}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 2, "Eating": 271.5, "Lying": 734.5, "Ruminating": 424.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 3, "Eating": 288.6, "Lying": 628.0, "Ruminating": 474.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 4, "Eating": 279.3, "Lying": 685.4, "Ruminating": 498.5}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 5, "Eating": 277.9, "Lying": 690.3, "Ruminating": 491.3}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 6, "Eating": 295.6, "Lying": 694.6, "Ruminating": 508.3}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 7, "Eating": 298.7, "Lying": 653.6, "Ruminating": 516.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 8, "Eating": 301.7, "Lying": 641.3, "Ruminating": 523.2}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 9, "Eating": 307.0, "Lying": 654.5, "Ruminating": 526.2}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 10, "Eating": 302.2, "Lying": 659.1, "Ruminating": 514.0}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 11, "Eating": 304.2, "Lying": 656.9, "Ruminating": 524.0}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 12, "Eating": 303.4, "Lying": 656.8, "Ruminating": 512.1}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 13, "Eating": 299.8, "Lying": 649.5, "Ruminating": 515.8}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 14, "Eating": 302.7, "Lying": 652.8, "Ruminating": 517.0}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 15, "Eating": 304.5, "Lying": 636.0, "Ruminating": 524.1}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 16, "Eating": 306.0, "Lying": 647.2, "Ruminating": 522.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 17, "Eating": 297.8, "Lying": 653.0, "Ruminating": 530.1}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 18, "Eating": 303.2, "Lying": 641.8, "Ruminating": 539.8}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 19, "Eating": 299.8, "Lying": 644.2, "Ruminating": 544.8}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 20, "Eating": 310.2, "Lying": 625.7, "Ruminating": 531.6}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 21, "Eating": 309.0, "Lying": 639.4, "Ruminating": 545.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 22, "Eating": 313.0, "Lying": 628.8, "Ruminating": 540.7}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 23, "Eating": 314.1, "Lying": 643.1, "Ruminating": 548.4}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 24, "Eating": 312.1, "Lying": 615.3, "Ruminating": 553.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 25, "Eating": 314.9, "Lying": 632.9, "Ruminating": 552.0}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 26, "Eating": 316.4, "Lying": 632.5, "Ruminating": 548.7}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 27, "Eating": 313.9, "Lying": 640.2, "Ruminating": 558.2}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 28, "Eating": 308.3, "Lying": 620.4, "Ruminating": 550.4}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 29, "Eating": 308.4, "Lying": 641.1, "Ruminating": 554.3}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 30, "Eating": 310.6, "Lying": 630.8, "Ruminating": 556.6}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 31, "Eating": 308.3, "Lying": 628.0, "Ruminating": 546.6}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 32, "Eating": 308.1, "Lying": 643.0, "Ruminating": 559.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 33, "Eating": 308.2, "Lying": 632.7, "Ruminating": 556.1}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 34, "Eating": 295.5, "Lying": 633.4, "Ruminating": 551.2}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 35, "Eating": 304.3, "Lying": 631.6, "Ruminating": 556.8}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 36, "Eating": 308.1, "Lying": 640.2, "Ruminating": 559.2}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 37, "Eating": 309.6, "Lying": 642.5, "Ruminating": 560.2}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 38, "Eating": 310.7, "Lying": 632.8, "Ruminating": 551.5}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 39, "Eating": 317.7, "Lying": 643.7, "Ruminating": 561.8}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 40, "Eating": 311.6, "Lying": 637.2, "Ruminating": 558.8}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 41, "Eating": 310.3, "Lying": 639.5, "Ruminating": 562.8}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 42, "Eating": 319.1, "Lying": 634.7, "Ruminating": 558.6}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 43, "Eating": 322.6, "Lying": 642.5, "Ruminating": 566.3}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 44, "Eating": 314.5, "Lying": 629.2, "Ruminating": 560.8}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 45, "Eating": 314.2, "Lying": 636.9, "Ruminating": 561.2}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 46, "Eating": 319.5, "Lying": 639.3, "Ruminating": 563.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 47, "Eating": 320.1, "Lying": 640.8, "Ruminating": 561.1}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 48, "Eating": 319.7, "Lying": 630.6, "Ruminating": 565.1}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 49, "Eating": 317.6, "Lying": 639.0, "Ruminating": 563.4}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 50, "Eating": 319.0, "Lying": 648.0, "Ruminating": 566.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 51, "Eating": 314.0, "Lying": 646.7, "Ruminating": 564.4}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 52, "Eating": 318.4, "Lying": 635.2, "Ruminating": 570.0}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 53, "Eating": 321.7, "Lying": 634.5, "Ruminating": 565.2}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 54, "Eating": 327.3, "Lying": 629.1, "Ruminating": 564.7}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 55, "Eating": 321.8, "Lying": 640.0, "Ruminating": 563.3}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 56, "Eating": 315.8, "Lying": 645.6, "Ruminating": 569.1}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 57, "Eating": 322.5, "Lying": 639.4, "Ruminating": 567.3}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 58, "Eating": 320.9, "Lying": 644.4, "Ruminating": 568.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 59, "Eating": 328.0, "Lying": 649.4, "Ruminating": 558.9}, {"HerdIdentifier": "Farm_C", "DaysInMilk": 60, "Eating": 321.5, "Lying": 649.7, "Ruminating": 578.5}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 0, "Eating": 338.1, "Lying": 525.3, "Ruminating": 386.9}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 1, "Eating": 300.7, "Lying": 451.3, "Ruminating": 496.2}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 2, "Eating": 285.6, "Lying": 529.7, "Ruminating": 531.6}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 3, "Eating": 300.0, "Lying": 567.5, "Ruminating": 535.0}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 4, "Eating": 306.4, "Lying": 582.7, "Ruminating": 560.3}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 5, "Eating": 304.4, "Lying": 561.8, "Ruminating": 586.0}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 6, "Eating": 300.9, "Lying": 551.4, "Ruminating": 590.1}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 7, "Eating": 301.0, "Lying": 558.9, "Ruminating": 580.0}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 8, "Eating": 301.4, "Lying": 546.9, "Ruminating": 589.5}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 9, "Eating": 302.8, "Lying": 545.2, "Ruminating": 589.5}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 10, "Eating": 298.2, "Lying": 537.9, "Ruminating": 586.8}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 11, "Eating": 303.6, "Lying": 536.7, "Ruminating": 593.9}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 12, "Eating": 295.3, "Lying": 533.7, "Ruminating": 588.3}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 13, "Eating": 305.4, "Lying": 536.2, "Ruminating": 587.1}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 14, "Eating": 311.2, "Lying": 539.5, "Ruminating": 593.4}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 15, "Eating": 314.1, "Lying": 539.5, "Ruminating": 590.5}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 16, "Eating": 313.9, "Lying": 541.3, "Ruminating": 588.8}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 17, "Eating": 313.7, "Lying": 549.1, "Ruminating": 591.2}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 18, "Eating": 318.5, "Lying": 540.6, "Ruminating": 591.7}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 19, "Eating": 319.6, "Lying": 523.8, "Ruminating": 594.0}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 20, "Eating": 313.1, "Lying": 543.9, "Ruminating": 590.4}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 21, "Eating": 320.7, "Lying": 527.1, "Ruminating": 589.9}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 22, "Eating": 312.6, "Lying": 523.6, "Ruminating": 592.8}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 23, "Eating": 325.5, "Lying": 528.1, "Ruminating": 590.7}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 24, "Eating": 330.6, "Lying": 532.5, "Ruminating": 594.1}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 25, "Eating": 322.1, "Lying": 530.2, "Ruminating": 584.9}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 26, "Eating": 320.0, "Lying": 530.6, "Ruminating": 595.8}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 27, "Eating": 319.6, "Lying": 534.3, "Ruminating": 587.2}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 28, "Eating": 326.3, "Lying": 532.9, "Ruminating": 590.5}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 29, "Eating": 324.7, "Lying": 532.2, "Ruminating": 584.6}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 30, "Eating": 321.6, "Lying": 527.0, "Ruminating": 592.5}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 31, "Eating": 314.5, "Lying": 536.0, "Ruminating": 590.7}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 32, "Eating": 322.5, "Lying": 532.6, "Ruminating": 591.0}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 33, "Eating": 322.0, "Lying": 544.6, "Ruminating": 598.2}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 34, "Eating": 327.5, "Lying": 540.2, "Ruminating": 591.8}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 35, "Eating": 324.7, "Lying": 544.8, "Ruminating": 592.4}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 36, "Eating": 327.4, "Lying": 540.9, "Ruminating": 589.6}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 37, "Eating": 335.1, "Lying": 536.2, "Ruminating": 597.2}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 38, "Eating": 328.2, "Lying": 538.9, "Ruminating": 601.5}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 39, "Eating": 328.6, "Lying": 535.8, "Ruminating": 594.4}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 40, "Eating": 325.5, "Lying": 535.0, "Ruminating": 587.4}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 41, "Eating": 321.4, "Lying": 536.9, "Ruminating": 590.9}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 42, "Eating": 325.5, "Lying": 543.3, "Ruminating": 598.5}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 43, "Eating": 329.3, "Lying": 525.1, "Ruminating": 596.4}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 44, "Eating": 329.8, "Lying": 540.6, "Ruminating": 594.8}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 45, "Eating": 331.6, "Lying": 553.8, "Ruminating": 591.8}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 46, "Eating": 332.8, "Lying": 545.4, "Ruminating": 589.5}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 47, "Eating": 327.6, "Lying": 544.5, "Ruminating": 595.7}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 48, "Eating": 328.0, "Lying": 537.0, "Ruminating": 592.7}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 49, "Eating": 326.9, "Lying": 526.7, "Ruminating": 588.3}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 50, "Eating": 328.0, "Lying": 546.5, "Ruminating": 591.7}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 51, "Eating": 322.3, "Lying": 524.4, "Ruminating": 591.6}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 52, "Eating": 328.9, "Lying": 545.7, "Ruminating": 594.5}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 53, "Eating": 325.4, "Lying": 536.5, "Ruminating": 590.4}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 54, "Eating": 327.5, "Lying": 544.3, "Ruminating": 592.6}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 55, "Eating": 321.4, "Lying": 530.5, "Ruminating": 594.4}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 56, "Eating": 330.4, "Lying": 529.0, "Ruminating": 593.8}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 57, "Eating": 325.5, "Lying": 537.6, "Ruminating": 586.6}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 58, "Eating": 321.8, "Lying": 530.1, "Ruminating": 592.6}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 59, "Eating": 318.7, "Lying": 534.3, "Ruminating": 594.1}, {"HerdIdentifier": "Farm_D", "DaysInMilk": 60, "Eating": 327.2, "Lying": 536.0, "Ruminating": 590.7}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 0, "Eating": 321.7, "Lying": 665.4, "Ruminating": 425.1}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 1, "Eating": 326.4, "Lying": 638.9, "Ruminating": 502.5}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 2, "Eating": 335.4, "Lying": 561.6, "Ruminating": 538.6}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 3, "Eating": 340.7, "Lying": 591.7, "Ruminating": 550.1}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 4, "Eating": 344.0, "Lying": 594.9, "Ruminating": 553.4}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 5, "Eating": 336.4, "Lying": 617.3, "Ruminating": 553.6}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 6, "Eating": 342.9, "Lying": 618.1, "Ruminating": 569.4}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 7, "Eating": 349.2, "Lying": 605.5, "Ruminating": 558.3}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 8, "Eating": 351.2, "Lying": 600.9, "Ruminating": 571.9}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 9, "Eating": 353.5, "Lying": 592.6, "Ruminating": 580.1}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 10, "Eating": 349.4, "Lying": 579.9, "Ruminating": 565.2}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 11, "Eating": 350.8, "Lying": 578.4, "Ruminating": 569.2}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 12, "Eating": 354.4, "Lying": 588.8, "Ruminating": 570.8}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 13, "Eating": 348.7, "Lying": 589.2, "Ruminating": 575.1}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 14, "Eating": 351.2, "Lying": 584.2, "Ruminating": 576.6}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 15, "Eating": 352.6, "Lying": 574.7, "Ruminating": 572.3}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 16, "Eating": 348.2, "Lying": 580.7, "Ruminating": 584.4}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 17, "Eating": 346.4, "Lying": 576.1, "Ruminating": 580.6}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 18, "Eating": 356.0, "Lying": 581.5, "Ruminating": 584.2}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 19, "Eating": 345.0, "Lying": 569.5, "Ruminating": 585.9}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 20, "Eating": 349.0, "Lying": 574.8, "Ruminating": 580.0}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 21, "Eating": 342.9, "Lying": 571.1, "Ruminating": 582.2}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 22, "Eating": 344.5, "Lying": 588.5, "Ruminating": 574.9}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 23, "Eating": 344.7, "Lying": 570.3, "Ruminating": 574.9}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 24, "Eating": 341.1, "Lying": 579.2, "Ruminating": 575.6}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 25, "Eating": 334.9, "Lying": 583.9, "Ruminating": 576.7}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 26, "Eating": 335.6, "Lying": 577.9, "Ruminating": 575.7}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 27, "Eating": 339.7, "Lying": 587.1, "Ruminating": 580.7}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 28, "Eating": 337.9, "Lying": 569.4, "Ruminating": 576.7}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 29, "Eating": 333.9, "Lying": 603.0, "Ruminating": 583.1}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 30, "Eating": 333.8, "Lying": 590.3, "Ruminating": 580.3}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 31, "Eating": 341.5, "Lying": 600.0, "Ruminating": 582.2}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 32, "Eating": 349.0, "Lying": 582.4, "Ruminating": 577.3}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 33, "Eating": 334.6, "Lying": 593.4, "Ruminating": 581.8}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 34, "Eating": 343.1, "Lying": 590.9, "Ruminating": 571.2}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 35, "Eating": 340.1, "Lying": 588.1, "Ruminating": 577.5}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 36, "Eating": 342.6, "Lying": 587.2, "Ruminating": 581.1}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 37, "Eating": 344.9, "Lying": 588.6, "Ruminating": 580.7}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 38, "Eating": 338.0, "Lying": 605.3, "Ruminating": 582.2}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 39, "Eating": 345.9, "Lying": 604.2, "Ruminating": 579.7}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 40, "Eating": 338.3, "Lying": 598.8, "Ruminating": 579.4}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 41, "Eating": 339.0, "Lying": 609.0, "Ruminating": 576.9}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 42, "Eating": 348.1, "Lying": 593.3, "Ruminating": 574.4}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 43, "Eating": 343.0, "Lying": 605.5, "Ruminating": 576.4}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 44, "Eating": 345.8, "Lying": 597.4, "Ruminating": 581.2}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 45, "Eating": 339.1, "Lying": 598.3, "Ruminating": 584.7}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 46, "Eating": 337.8, "Lying": 612.9, "Ruminating": 570.6}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 47, "Eating": 343.4, "Lying": 600.3, "Ruminating": 586.7}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 48, "Eating": 337.9, "Lying": 623.9, "Ruminating": 587.4}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 49, "Eating": 343.7, "Lying": 594.2, "Ruminating": 580.9}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 50, "Eating": 352.5, "Lying": 597.0, "Ruminating": 581.3}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 51, "Eating": 341.0, "Lying": 602.7, "Ruminating": 577.8}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 52, "Eating": 343.9, "Lying": 609.8, "Ruminating": 581.5}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 53, "Eating": 343.0, "Lying": 608.0, "Ruminating": 577.2}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 54, "Eating": 347.2, "Lying": 596.5, "Ruminating": 571.4}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 55, "Eating": 338.9, "Lying": 598.4, "Ruminating": 577.0}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 56, "Eating": 336.3, "Lying": 601.1, "Ruminating": 574.3}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 57, "Eating": 344.2, "Lying": 598.4, "Ruminating": 576.4}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 58, "Eating": 339.4, "Lying": 613.6, "Ruminating": 586.8}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 59, "Eating": 336.3, "Lying": 599.8, "Ruminating": 574.0}, {"HerdIdentifier": "Farm_E", "DaysInMilk": 60, "Eating": 343.1, "Lying": 614.7, "Ruminating": 579.4}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 0, "Eating": 360.8, "Lying": 584.3, "Ruminating": 314.7}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 1, "Eating": 312.8, "Lying": 628.7, "Ruminating": 422.2}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 2, "Eating": 278.8, "Lying": 667.1, "Ruminating": 460.2}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 3, "Eating": 268.7, "Lying": 715.4, "Ruminating": 462.3}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 4, "Eating": 281.9, "Lying": 711.2, "Ruminating": 473.8}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 5, "Eating": 267.9, "Lying": 684.0, "Ruminating": 477.0}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 6, "Eating": 267.6, "Lying": 709.6, "Ruminating": 476.4}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 7, "Eating": 276.2, "Lying": 681.5, "Ruminating": 478.4}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 8, "Eating": 280.2, "Lying": 679.7, "Ruminating": 492.2}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 9, "Eating": 286.1, "Lying": 676.4, "Ruminating": 488.8}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 10, "Eating": 282.3, "Lying": 665.0, "Ruminating": 498.4}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 11, "Eating": 282.7, "Lying": 670.6, "Ruminating": 496.8}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 12, "Eating": 283.2, "Lying": 686.2, "Ruminating": 504.2}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 13, "Eating": 283.8, "Lying": 663.1, "Ruminating": 506.0}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 14, "Eating": 286.7, "Lying": 659.6, "Ruminating": 483.5}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 15, "Eating": 284.5, "Lying": 666.6, "Ruminating": 497.4}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 16, "Eating": 282.3, "Lying": 673.8, "Ruminating": 491.3}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 17, "Eating": 287.8, "Lying": 691.5, "Ruminating": 502.4}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 18, "Eating": 289.2, "Lying": 659.2, "Ruminating": 503.9}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 19, "Eating": 295.4, "Lying": 676.3, "Ruminating": 496.6}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 20, "Eating": 287.5, "Lying": 662.3, "Ruminating": 493.9}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 21, "Eating": 292.2, "Lying": 671.1, "Ruminating": 482.0}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 22, "Eating": 280.0, "Lying": 677.9, "Ruminating": 491.4}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 23, "Eating": 299.2, "Lying": 694.9, "Ruminating": 486.2}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 24, "Eating": 295.7, "Lying": 670.2, "Ruminating": 502.7}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 25, "Eating": 296.9, "Lying": 663.1, "Ruminating": 510.8}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 26, "Eating": 288.7, "Lying": 676.6, "Ruminating": 506.5}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 27, "Eating": 290.0, "Lying": 687.5, "Ruminating": 504.8}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 28, "Eating": 298.1, "Lying": 683.5, "Ruminating": 506.8}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 29, "Eating": 297.5, "Lying": 687.6, "Ruminating": 517.1}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 30, "Eating": 298.1, "Lying": 677.9, "Ruminating": 507.0}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 31, "Eating": 289.2, "Lying": 686.4, "Ruminating": 515.6}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 32, "Eating": 295.8, "Lying": 691.4, "Ruminating": 507.4}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 33, "Eating": 296.1, "Lying": 692.5, "Ruminating": 515.7}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 34, "Eating": 296.1, "Lying": 711.0, "Ruminating": 507.0}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 35, "Eating": 292.2, "Lying": 699.3, "Ruminating": 508.3}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 36, "Eating": 292.4, "Lying": 691.3, "Ruminating": 505.0}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 37, "Eating": 296.3, "Lying": 686.4, "Ruminating": 507.0}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 38, "Eating": 301.2, "Lying": 683.9, "Ruminating": 505.3}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 39, "Eating": 303.3, "Lying": 685.2, "Ruminating": 516.1}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 40, "Eating": 300.6, "Lying": 705.7, "Ruminating": 514.8}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 41, "Eating": 298.7, "Lying": 675.9, "Ruminating": 523.1}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 42, "Eating": 303.1, "Lying": 677.4, "Ruminating": 513.9}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 43, "Eating": 308.9, "Lying": 709.9, "Ruminating": 524.5}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 44, "Eating": 313.3, "Lying": 697.2, "Ruminating": 522.3}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 45, "Eating": 309.4, "Lying": 695.9, "Ruminating": 529.7}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 46, "Eating": 307.5, "Lying": 699.1, "Ruminating": 530.4}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 47, "Eating": 308.5, "Lying": 689.0, "Ruminating": 514.1}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 48, "Eating": 302.0, "Lying": 686.9, "Ruminating": 520.8}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 49, "Eating": 304.0, "Lying": 666.3, "Ruminating": 514.0}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 50, "Eating": 305.8, "Lying": 675.7, "Ruminating": 515.6}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 51, "Eating": 310.4, "Lying": 711.0, "Ruminating": 517.8}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 52, "Eating": 311.4, "Lying": 687.2, "Ruminating": 527.7}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 53, "Eating": 307.2, "Lying": 701.6, "Ruminating": 511.2}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 54, "Eating": 309.0, "Lying": 702.8, "Ruminating": 513.6}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 55, "Eating": 310.3, "Lying": 689.6, "Ruminating": 523.7}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 56, "Eating": 316.0, "Lying": 674.9, "Ruminating": 523.4}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 57, "Eating": 311.7, "Lying": 698.7, "Ruminating": 512.3}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 58, "Eating": 312.5, "Lying": 705.0, "Ruminating": 530.8}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 59, "Eating": 311.9, "Lying": 710.6, "Ruminating": 518.5}, {"HerdIdentifier": "Farm_F", "DaysInMilk": 60, "Eating": 316.3, "Lying": 719.4, "Ruminating": 522.5}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 0, "Eating": 367.0, "Lying": 585.4, "Ruminating": 373.8}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 1, "Eating": 333.8, "Lying": 505.4, "Ruminating": 469.9}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 2, "Eating": 315.1, "Lying": 626.2, "Ruminating": 511.5}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 3, "Eating": 308.5, "Lying": 677.6, "Ruminating": 536.8}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 4, "Eating": 301.1, "Lying": 689.4, "Ruminating": 554.5}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 5, "Eating": 300.1, "Lying": 683.5, "Ruminating": 564.4}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 6, "Eating": 304.2, "Lying": 674.0, "Ruminating": 570.0}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 7, "Eating": 299.5, "Lying": 678.0, "Ruminating": 565.6}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 8, "Eating": 304.2, "Lying": 681.4, "Ruminating": 574.6}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 9, "Eating": 301.6, "Lying": 676.3, "Ruminating": 576.2}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 10, "Eating": 302.3, "Lying": 672.2, "Ruminating": 573.8}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 11, "Eating": 300.2, "Lying": 681.6, "Ruminating": 581.7}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 12, "Eating": 306.2, "Lying": 664.4, "Ruminating": 584.5}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 13, "Eating": 317.3, "Lying": 669.0, "Ruminating": 583.1}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 14, "Eating": 317.3, "Lying": 667.5, "Ruminating": 578.5}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 15, "Eating": 318.8, "Lying": 666.0, "Ruminating": 578.7}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 16, "Eating": 326.2, "Lying": 670.5, "Ruminating": 585.4}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 17, "Eating": 322.8, "Lying": 669.3, "Ruminating": 589.1}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 18, "Eating": 329.1, "Lying": 674.4, "Ruminating": 585.2}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 19, "Eating": 326.4, "Lying": 669.8, "Ruminating": 589.4}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 20, "Eating": 329.2, "Lying": 663.0, "Ruminating": 591.6}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 21, "Eating": 334.1, "Lying": 649.4, "Ruminating": 583.7}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 22, "Eating": 333.4, "Lying": 650.3, "Ruminating": 591.1}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 23, "Eating": 334.3, "Lying": 658.3, "Ruminating": 601.7}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 24, "Eating": 330.9, "Lying": 663.0, "Ruminating": 599.0}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 25, "Eating": 330.4, "Lying": 664.8, "Ruminating": 596.6}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 26, "Eating": 336.9, "Lying": 658.6, "Ruminating": 594.8}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 27, "Eating": 332.6, "Lying": 662.1, "Ruminating": 591.1}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 28, "Eating": 335.5, "Lying": 670.3, "Ruminating": 592.9}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 29, "Eating": 338.8, "Lying": 670.1, "Ruminating": 596.7}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 30, "Eating": 346.2, "Lying": 666.9, "Ruminating": 595.3}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 31, "Eating": 342.7, "Lying": 657.0, "Ruminating": 591.3}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 32, "Eating": 337.4, "Lying": 664.2, "Ruminating": 600.5}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 33, "Eating": 341.4, "Lying": 665.9, "Ruminating": 592.6}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 34, "Eating": 349.3, "Lying": 654.3, "Ruminating": 600.0}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 35, "Eating": 345.5, "Lying": 662.5, "Ruminating": 597.4}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 36, "Eating": 349.6, "Lying": 662.2, "Ruminating": 594.7}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 37, "Eating": 349.0, "Lying": 652.5, "Ruminating": 598.8}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 38, "Eating": 347.1, "Lying": 673.0, "Ruminating": 597.5}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 39, "Eating": 349.8, "Lying": 657.4, "Ruminating": 599.3}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 40, "Eating": 348.6, "Lying": 642.8, "Ruminating": 593.4}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 41, "Eating": 349.2, "Lying": 659.0, "Ruminating": 599.0}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 42, "Eating": 349.4, "Lying": 637.4, "Ruminating": 596.7}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 43, "Eating": 348.2, "Lying": 648.3, "Ruminating": 599.4}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 44, "Eating": 344.8, "Lying": 646.6, "Ruminating": 591.9}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 45, "Eating": 346.7, "Lying": 646.6, "Ruminating": 583.4}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 46, "Eating": 347.2, "Lying": 658.6, "Ruminating": 597.0}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 47, "Eating": 356.8, "Lying": 646.4, "Ruminating": 592.5}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 48, "Eating": 351.0, "Lying": 644.7, "Ruminating": 597.3}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 49, "Eating": 350.8, "Lying": 651.2, "Ruminating": 598.7}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 50, "Eating": 353.8, "Lying": 639.9, "Ruminating": 598.4}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 51, "Eating": 352.5, "Lying": 650.0, "Ruminating": 597.6}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 52, "Eating": 349.2, "Lying": 659.0, "Ruminating": 589.8}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 53, "Eating": 353.2, "Lying": 664.2, "Ruminating": 595.3}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 54, "Eating": 353.3, "Lying": 660.1, "Ruminating": 584.5}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 55, "Eating": 353.3, "Lying": 656.1, "Ruminating": 592.5}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 56, "Eating": 352.5, "Lying": 650.9, "Ruminating": 597.2}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 57, "Eating": 354.4, "Lying": 659.5, "Ruminating": 596.2}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 58, "Eating": 356.7, "Lying": 658.8, "Ruminating": 594.0}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 59, "Eating": 356.0, "Lying": 655.9, "Ruminating": 593.7}, {"HerdIdentifier": "Farm_G", "DaysInMilk": 60, "Eating": 349.3, "Lying": 649.5, "Ruminating": 590.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 0, "Eating": 323.9, "Lying": 677.3, "Ruminating": 345.2}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 1, "Eating": 360.4, "Lying": 578.7, "Ruminating": 430.0}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 2, "Eating": 333.5, "Lying": 624.0, "Ruminating": 475.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 3, "Eating": 344.3, "Lying": 660.4, "Ruminating": 495.4}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 4, "Eating": 344.3, "Lying": 651.4, "Ruminating": 528.1}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 5, "Eating": 351.7, "Lying": 631.8, "Ruminating": 537.9}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 6, "Eating": 349.6, "Lying": 630.7, "Ruminating": 541.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 7, "Eating": 354.6, "Lying": 619.1, "Ruminating": 552.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 8, "Eating": 359.9, "Lying": 628.8, "Ruminating": 561.2}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 9, "Eating": 364.7, "Lying": 608.8, "Ruminating": 563.3}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 10, "Eating": 368.8, "Lying": 613.7, "Ruminating": 567.6}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 11, "Eating": 375.2, "Lying": 622.0, "Ruminating": 564.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 12, "Eating": 386.7, "Lying": 608.0, "Ruminating": 572.4}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 13, "Eating": 389.1, "Lying": 607.5, "Ruminating": 571.4}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 14, "Eating": 389.8, "Lying": 600.1, "Ruminating": 569.8}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 15, "Eating": 382.8, "Lying": 592.7, "Ruminating": 561.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 16, "Eating": 394.6, "Lying": 604.7, "Ruminating": 573.4}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 17, "Eating": 390.4, "Lying": 608.7, "Ruminating": 565.2}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 18, "Eating": 399.9, "Lying": 601.8, "Ruminating": 565.2}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 19, "Eating": 397.4, "Lying": 581.9, "Ruminating": 570.0}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 20, "Eating": 401.8, "Lying": 586.2, "Ruminating": 570.1}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 21, "Eating": 400.7, "Lying": 593.3, "Ruminating": 574.5}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 22, "Eating": 398.2, "Lying": 582.8, "Ruminating": 566.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 23, "Eating": 402.0, "Lying": 591.0, "Ruminating": 569.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 24, "Eating": 401.1, "Lying": 595.5, "Ruminating": 576.3}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 25, "Eating": 406.7, "Lying": 590.8, "Ruminating": 569.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 26, "Eating": 409.3, "Lying": 598.1, "Ruminating": 571.2}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 27, "Eating": 405.2, "Lying": 599.4, "Ruminating": 569.2}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 28, "Eating": 405.6, "Lying": 601.1, "Ruminating": 571.1}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 29, "Eating": 410.8, "Lying": 600.5, "Ruminating": 570.5}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 30, "Eating": 414.1, "Lying": 596.6, "Ruminating": 562.3}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 31, "Eating": 411.6, "Lying": 596.3, "Ruminating": 568.5}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 32, "Eating": 413.3, "Lying": 608.8, "Ruminating": 575.0}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 33, "Eating": 416.6, "Lying": 605.5, "Ruminating": 571.8}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 34, "Eating": 420.7, "Lying": 609.7, "Ruminating": 575.4}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 35, "Eating": 419.8, "Lying": 599.0, "Ruminating": 573.2}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 36, "Eating": 423.1, "Lying": 598.4, "Ruminating": 564.8}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 37, "Eating": 413.4, "Lying": 593.9, "Ruminating": 571.5}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 38, "Eating": 416.0, "Lying": 592.0, "Ruminating": 570.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 39, "Eating": 413.0, "Lying": 595.3, "Ruminating": 566.1}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 40, "Eating": 410.9, "Lying": 606.5, "Ruminating": 573.9}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 41, "Eating": 414.7, "Lying": 610.1, "Ruminating": 572.5}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 42, "Eating": 410.6, "Lying": 599.7, "Ruminating": 574.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 43, "Eating": 412.8, "Lying": 610.3, "Ruminating": 574.0}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 44, "Eating": 420.6, "Lying": 599.6, "Ruminating": 569.5}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 45, "Eating": 410.7, "Lying": 616.7, "Ruminating": 577.6}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 46, "Eating": 416.9, "Lying": 610.0, "Ruminating": 569.1}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 47, "Eating": 417.0, "Lying": 619.0, "Ruminating": 575.3}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 48, "Eating": 419.2, "Lying": 619.2, "Ruminating": 578.0}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 49, "Eating": 425.3, "Lying": 611.1, "Ruminating": 579.4}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 50, "Eating": 423.1, "Lying": 609.2, "Ruminating": 579.0}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 51, "Eating": 417.6, "Lying": 598.4, "Ruminating": 573.7}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 52, "Eating": 412.3, "Lying": 616.9, "Ruminating": 579.9}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 53, "Eating": 419.1, "Lying": 601.8, "Ruminating": 579.0}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 54, "Eating": 409.0, "Lying": 601.5, "Ruminating": 573.9}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 55, "Eating": 421.9, "Lying": 602.5, "Ruminating": 579.4}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 56, "Eating": 413.9, "Lying": 612.5, "Ruminating": 574.0}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 57, "Eating": 421.0, "Lying": 616.1, "Ruminating": 583.2}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 58, "Eating": 423.2, "Lying": 614.7, "Ruminating": 579.0}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 59, "Eating": 419.0, "Lying": 608.2, "Ruminating": 582.5}, {"HerdIdentifier": "Farm_H", "DaysInMilk": 60, "Eating": 417.1, "Lying": 619.9, "Ruminating": 575.7}], "milk_curve": [], "milk_beh": []};
+const farmName = h => String(h).replace(/^Farm_/, 'Farm ');
+ 
+// ── Colour palette ────────────────────────────────
+const C = {
+  green:  '#3a6b4a', green2: '#5a9468', green3: '#c8dfc8',
+  amber:  '#c17f2a', amber2: '#e8a84a', amber3: '#fdf0d5',
+  red:    '#b03a2e', red2:   '#e8a09a',
+  brown:  '#5c4a35', brown2: '#8b6f47',
+  muted:  '#a89880', border: '#d4c5b0',
+  farms:  ['#3a6b4a','#c17f2a','#5a9468','#8b6f47','#b03a2e','#e8a84a','#7b9e87','#9a7040'],
+};
+ 
+Chart.defaults.font.family = 'Inter, sans-serif';
+Chart.defaults.font.size   = 11;
+Chart.defaults.color       = '#7a6a57';
+Chart.defaults.borderColor = '#d4c5b0';
+ 
+const chartDefaults = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { labels: { color: '#7a6a57', padding: 12 } },
+    tooltip: { backgroundColor: '#faf7f2', titleColor: '#2d2416', bodyColor: '#7a6a57',
+                borderColor: '#d4c5b0', borderWidth: 1, padding: 10 }
+  }
+};
+ 
+function mk(id, cfg) {
+  const el = document.getElementById(id);
+  if (!el) return null;
+  return new Chart(el, cfg);
+}
+ 
+// ── Tab switching ─────────────────────────────────
+function showBehTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('beh-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+ 
+// ── Button group helper ───────────────────────────
+function activateBtn(btn) {
+  btn.closest('.btn-group').querySelectorAll('button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+ 
+// ── Farm days chart ───────────────────────────────
+let farmDaysChart;
+let farmDaysSortMode = 'farm';
+ 
+function sortFarmDays(mode) {
+  farmDaysSortMode = mode;
+  activateBtn(event.target);
+  let data = [...D.farm_stats];
+  if (mode === 'days')    data.sort((a,b) => b.AnimalDays - a.AnimalDays);
+  if (mode === 'animals') data.sort((a,b) => b.Animals - a.Animals);
+  farmDaysChart.data.labels   = data.map(r => farmName(r.HerdIdentifier));
+  farmDaysChart.data.datasets[0].data = data.map(r => r.AnimalDays);
+  farmDaysChart.update('active');
+}
+ 
+farmDaysChart = mk('farmDaysChart', {
+  type: 'bar',
+  data: {
+    labels: D.farm_stats.map(r => farmName(r.HerdIdentifier)),
+    datasets: [{ label: 'Animal-Days',
+      data: D.farm_stats.map(r => r.AnimalDays),
+      backgroundColor: C.farms,
+      borderWidth: 0, borderRadius: 4,
+    }]
+  },
+  options: { ...chartDefaults,
+    plugins: { ...chartDefaults.plugins, legend: { display: false } },
+    scales: {
+      y: { grid: { color: '#ede3d4' }, ticks: { callback: v => (v/1000).toFixed(0)+'K' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+ 
+// ── Bridge chart ──────────────────────────────────
+mk('bridgeChart', {
+  type: 'doughnut',
+  data: {
+    labels: D.bridge_stats.map(r => r.JoinMethod),
+    datasets: [{ data: D.bridge_stats.map(r => r.count),
+      backgroundColor: [C.green, C.amber, C.muted],
+      borderColor: '#faf7f2', borderWidth: 3,
+    }]
+  },
+  options: { ...chartDefaults,
+    plugins: { ...chartDefaults.plugins,
+      legend: { position: 'bottom', labels: { color: '#7a6a57', padding: 14 } },
+    }
+  }
+});
+ 
+// ── DIM trend chart ───────────────────────────────
+let dimChart;
+let dimBeh = 'Eating';
+ 
+// Populate farm select
+const dimSel = document.getElementById('dimFarmSelect');
+D.farm_stats.forEach(r => {
+  const o = document.createElement('option');
+  o.value = r.HerdIdentifier; o.text = farmName(r.HerdIdentifier);
+  dimSel.appendChild(o);
+});
+ 
+function updateDimChart(beh) {
+  if (beh) { dimBeh = beh; activateBtn(event.target); }
+  const farm = dimSel.value;
+  let chartData;
+  if (farm === 'all') {
+    chartData = D.dim_trend;
+  } else {
+    chartData = D.farm_dim.filter(r => String(r.HerdIdentifier) === String(farm));
+  }
+  const labels = chartData.map(r => r.DaysInMilk);
+  const vals   = chartData.map(r => r[dimBeh] || null);
+  const farmLabel = farm === 'all' ? 'all farms' : farmName(farm);
+  document.getElementById('dimChartTitle').textContent =
+    `Average ${dimBeh} Time — First 100 Days In Milk (${farmLabel})`;
+  dimChart.data.labels = labels;
+  dimChart.data.datasets[0].data = vals;
+  dimChart.data.datasets[0].label = dimBeh + ' (min/day)';
+  dimChart.update('active');
+}
+ 
+dimChart = mk('dimTrendChart', {
+  type: 'line',
+  data: {
+    labels: D.dim_trend.map(r => r.DaysInMilk),
+    datasets: [{ label: 'Eating (min/day)',
+      data: D.dim_trend.map(r => r.Eating),
+      borderColor: C.green, backgroundColor: C.green + '18',
+      fill: true, tension: 0.4, pointRadius: 0, borderWidth: 2.5,
+    }]
+  },
+  options: { ...chartDefaults,
+    plugins: { ...chartDefaults.plugins, legend: { display: false } },
+    scales: {
+      x: { title: { display:true, text:'Days In Milk', color: C.muted },
+             grid: { color: '#ede3d4' } },
+      y: { title: { display:true, text:'Minutes / day', color: C.muted },
+             grid: { color: '#ede3d4' } }
+    }
+  }
+});
+ 
+// ── Parity chart ──────────────────────────────────
+mk('parityChart', {
+  type: 'bar',
+  data: {
+    labels: D.parity_beh.map(r => 'Parity ' + r.Parity),
+    datasets: [
+      { label:'Eating',     data:D.parity_beh.map(r=>r.Eating),
+         backgroundColor:C.green+'bb', borderRadius:3, borderWidth:0 },
+      { label:'Lying',      data:D.parity_beh.map(r=>r.Lying),
+         backgroundColor:C.amber+'bb', borderRadius:3, borderWidth:0 },
+      { label:'Ruminating', data:D.parity_beh.map(r=>r.Ruminating),
+         backgroundColor:C.brown2+'bb', borderRadius:3, borderWidth:0 },
+      { label:'Walking',    data:D.parity_beh.map(r=>r.Walking),
+         backgroundColor:C.red+'99', borderRadius:3, borderWidth:0 },
+    ]
+  },
+  options: { ...chartDefaults,
+    scales: {
+      y: { grid: { color:'#ede3d4' }, title:{display:true,text:'Minutes/day',color:C.muted} },
+      x: { grid: { display:false } }
+    }
+  }
+});
+ 
+// ── Farm behaviour chart ──────────────────────────
+mk('farmBehChart', {
+  type: 'bar',
+  data: {
+    labels: D.farm_stats.map(r => farmName(r.HerdIdentifier)),
+    datasets: [
+      { label:'Avg Eating',     data:D.farm_stats.map(r=>r.AvgEating),
+         backgroundColor:C.green+'bb', borderRadius:3, borderWidth:0 },
+      { label:'Avg Lying',      data:D.farm_stats.map(r=>r.AvgLying),
+         backgroundColor:C.amber+'bb', borderRadius:3, borderWidth:0 },
+      { label:'Avg Ruminating', data:D.farm_stats.map(r=>r.AvgRuminating),
+         backgroundColor:C.brown2+'bb', borderRadius:3, borderWidth:0 },
+    ]
+  },
+  options: { ...chartDefaults,
+    scales: {
+      y: { grid:{color:'#ede3d4'}, title:{display:true,text:'Minutes/day',color:C.muted} },
+      x: { grid:{display:false} }
+    }
+  }
+});
+ 
+// ── Pre-calving chart ─────────────────────────────
+let precalvChart;
+let precalvBeh = 'Eating';
+ 
+function updatePrecalvChart(beh) {
+  if (beh) { precalvBeh = beh; activateBtn(event.target); }
+  const normo = D.precalving.filter(r => r.SubclinicalHypocalcaemia === false);
+  const hypo  = D.precalving.filter(r => r.SubclinicalHypocalcaemia === true);
+  document.getElementById('precalvTitle').textContent =
+    `${beh} — 21 Days Before Calving by Calcium Status`;
+  precalvChart.data.labels = normo.map(r => r.DaysInMilk);
+  precalvChart.data.datasets[0].data = normo.map(r => r[beh] || null);
+  precalvChart.data.datasets[1].data = hypo.map(r => r[beh] || null);
+  precalvChart.update('active');
+}
+ 
+const pcNormo = D.precalving.filter(r => r.SubclinicalHypocalcaemia === false);
+const pcHypo  = D.precalving.filter(r => r.SubclinicalHypocalcaemia === true);
+ 
+precalvChart = mk('precalvChart', {
+  type: 'line',
+  data: {
+    labels: pcNormo.map(r => r.DaysInMilk),
+    datasets: [
+      { label: 'Normocalcaemic (Ca > 2.0)',
+         data: pcNormo.map(r => r.Eating),
+         borderColor: C.green, backgroundColor: C.green+'15',
+         fill: true, tension: 0.4, pointRadius: 3, borderWidth: 2.5 },
+      { label: 'Hypocalcaemic (Ca ≤ 2.0)',
+         data: pcHypo.map(r => r.Eating),
+         borderColor: C.red, backgroundColor: C.red+'15',
+         fill: true, tension: 0.4, pointRadius: 3, borderWidth: 2.5 },
+    ]
+  },
+  options: { ...chartDefaults,
+    scales: {
+      x: { title:{display:true,text:'Days In Milk (negative = pre-calving)',color:C.muted},
+             grid:{color:'#ede3d4'}, reverse: true },
+      y: { title:{display:true,text:'Minutes / day',color:C.muted},
+             grid:{color:'#ede3d4'} }
+    }
+  }
+});
+ 
+// ── Clinical chart ────────────────────────────────
+let clinicalChart;
+let clinicalMetric = 'Ketosis';
+ 
+function updateClinicalChart(metric) {
+  clinicalMetric = metric;
+  activateBtn(event.target);
+  const keyMap = {
+    Ketosis:'KetosisRate', Hypocalcaemia:'HypocalcaemiaRate',
+    Difficult:'DifficultRate', Retained:'RetainedRate'
+  };
+  const colMap = {
+    Ketosis:C.amber, Hypocalcaemia:C.amber, Difficult:C.red, Retained:C.red
+  };
+  const key = keyMap[metric];
+  clinicalChart.data.datasets[0].data = D.clinical_rates.map(r => r[key] || 0);
+  clinicalChart.data.datasets[0].backgroundColor = colMap[metric] + 'bb';
+  clinicalChart.data.datasets[0].borderColor = colMap[metric];
+  clinicalChart.data.datasets[0].label = metric + ' rate (%)';
+  clinicalChart.update('active');
+}
+ 
+clinicalChart = mk('clinicalChart', {
+  type: 'bar',
+  data: {
+    labels: D.clinical_rates.map(r => farmName(r.HerdIdentifier)),
+    datasets: [{ label: 'Ketosis rate (%)',
+      data: D.clinical_rates.map(r => r.KetosisRate || 0),
+      backgroundColor: C.amber + 'bb', borderColor: C.amber,
+      borderWidth: 1, borderRadius: 4,
+    }]
+  },
+  options: { ...chartDefaults,
+    plugins: { ...chartDefaults.plugins, legend: { display: false } },
+    scales: {
+      y: { grid:{color:'#ede3d4'}, title:{display:true,text:'%',color:C.muted}, max:60 },
+      x: { grid:{display:false} }
+    }
+  }
+});
+ 
+// ── Flag chart ────────────────────────────────────
+mk('flagChart', {
+  type: 'bar',
+  indexAxis: 'y',
+  data: {
+    labels: D.flag_counts.map(r => r.Flag.replace('Note','')),
+    datasets: [{ label: 'Occurrences',
+      data: D.flag_counts.map(r => r.Count),
+      backgroundColor: C.green + 'aa',
+      borderColor: C.green, borderWidth: 1, borderRadius: 3,
+    }]
+  },
+  options: { ...chartDefaults,
+    plugins: { ...chartDefaults.plugins, legend: { display: false } },
+    scales: {
+      x: { grid:{color:'#ede3d4'} },
+      y: { grid:{display:false}, ticks:{font:{size:10}} }
+    }
+  }
+});
+ 
+// ── THI monthly chart ─────────────────────────────
+mk('thiMonthChart', {
+  type: 'line',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    datasets: [
+      { label:'Avg Max THI',  data:D.thi_monthly.map(r=>r.AvgMaxTHI),
+         borderColor:C.red, tension:0.4, pointRadius:4, borderWidth:2.5,
+         backgroundColor: C.red+'12', fill: true },
+      { label:'Avg Mean THI', data:D.thi_monthly.map(r=>r.AvgMeanTHI),
+         borderColor:C.amber, tension:0.4, pointRadius:4, borderWidth:2,
+         backgroundColor: 'transparent' },
+    ]
+  },
+  options: { ...chartDefaults,
+    scales: {
+      y: { grid:{color:'#ede3d4'}, min:20,
+             title:{display:true,text:'THI',color:C.muted} },
+      x: { grid:{display:false} }
+    }
+  }
+});
+ 
+// ── THI stress chart ──────────────────────────────
+mk('thiStressChart', {
+  type: 'bar',
+  data: {
+    labels: D.thi_stats.map(r => farmName(r.HerdIdentifier)),
+    datasets: [{ label: 'Heat Stress Days (THI > 72)',
+      data: D.thi_stats.map(r => r.HeatStressDays),
+      backgroundColor: C.red + 'bb', borderColor: C.red,
+      borderWidth: 1, borderRadius: 4,
+    }]
+  },
+  options: { ...chartDefaults,
+    plugins: { ...chartDefaults.plugins, legend:{display:false} },
+    scales: {
+      y: { grid:{color:'#ede3d4'}, title:{display:true,text:'Days',color:C.muted} },
+      x: { grid:{display:false} }
+    }
+  }
+});
+ 
+// ── Repro chart ───────────────────────────────────
+let reproChart;
+let reproMetric = 'DaysOpen';
+ 
+function updateReproChart(metric) {
+  reproMetric = metric;
+  activateBtn(event.target);
+  const keyMap = {DaysOpen:'AvgDaysOpen', Interval:'AvgCalvingInterval', Inseminations:'AvgInseminations'};
+  const lblMap = {DaysOpen:'Avg Days Open', Interval:'Avg Calving Interval (days)', Inseminations:'Avg Inseminations'};
+  const key = keyMap[metric];
+  reproChart.data.datasets[0].data  = D.repro_stats.map(r => r[key] || 0);
+  reproChart.data.datasets[0].label = lblMap[metric];
+  reproChart.update('active');
+}
+ 
+reproChart = mk('reproChart', {
+  type: 'bar',
+  data: {
+    labels: D.repro_stats.map(r => farmName(r.HerdIdentifier)),
+    datasets: [{ label: 'Avg Days Open',
+      data: D.repro_stats.map(r => r.AvgDaysOpen || 0),
+      backgroundColor: C.amber + 'bb', borderColor: C.amber,
+      borderWidth: 1, borderRadius: 4,
+    }]
+  },
+  options: { ...chartDefaults,
+    plugins: { ...chartDefaults.plugins, legend:{display:false} },
+    scales: {
+      y: { grid:{color:'#ede3d4'} },
+      x: { grid:{display:false} }
+    }
+  }
+});
+ 
+// ── Insemination chart ────────────────────────────
+mk('insemChart', {
+  type: 'bar',
+  data: {
+    labels: ['0','1','2','3','4','5','6','7','8','9','10+'],
+    datasets: [{ label: 'Lactations',
+      data: [57,578,377,226,130,77,53,32,23,9,6],
+      backgroundColor: ['#c8dfc8','#3a6b4a','#5a9468','#8b6f47',
+                         '#c17f2a','#e8a84a','#b03a2e','#b03a2e','#b03a2e','#b03a2e','#b03a2e'],
+      borderWidth: 0, borderRadius: 4,
+    }]
+  },
+  options: { ...chartDefaults,
+    plugins: { ...chartDefaults.plugins, legend:{display:false} },
+    scales: {
+      x: { title:{display:true,text:'Inseminations per lactation',color:C.muted},
+             grid:{display:false} },
+      y: { grid:{color:'#ede3d4'} }
+    }
+  }
+});
+ 
+// ── Rulebook bars ─────────────────────────────────
+const rbEl = document.getElementById('rulebook-bars');
+[['ReferenceData',64],['SensorData',7],['TemperatureHumidityIndex',13],['CalendarData',7]].forEach(([ds,n]) => {
+  const pct = Math.round(n/64*100);
+  rbEl.innerHTML += `
+  <div style="margin-bottom:1rem;display:flex;align-items:center;gap:1rem">
+    <div style="width:200px;font-size:0.82rem;color:var(--text);font-weight:500">${ds}</div>
+    <div style="flex:1">
+      <div style="height:8px;background:var(--warm2);border-radius:4px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:var(--green2);border-radius:4px;transition:width 0.8s ease"></div>
+      </div>
+    </div>
+    <div style="width:60px;text-align:right;font-size:0.8rem;color:var(--muted)">${n} cols</div>
+  </div>`;
+});
+ 
+// ── Null profile bars ─────────────────────────────
+const npEl = document.getElementById('null-profile-bars');
+D.null_profile.forEach(r => {
+  const pct = parseFloat(r.NullPct);
+  const cls = pct > 70 ? 'high' : pct > 30 ? 'mid' : 'low';
+  const color = pct > 70 ? C.red : pct > 30 ? C.amber : C.green;
+  npEl.innerHTML += `
+  <div style="margin-bottom:1rem">
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+      <span style="font-size:0.82rem;color:var(--text);font-weight:500">${r.Column}</span>
+      <span style="font-size:0.78rem;color:var(--muted)">${pct}% null</span>
+    </div>
+    <div class="null-bar">
+      <div class="null-fill ${cls}" style="width:${pct}%"></div>
+    </div>
+  </div>`;
+});
+ 
+// ── Animate bars on scroll ────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.null-fill, [style*="width:"]').forEach(el => {
+        el.style.transitionDelay = '0.1s';
+      });
+    }
+  });
+}, { threshold: 0.1 });
+ 
+document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+// ── Milk charts (only when the milk section is present) ──
+if (D.milk_curve && D.milk_curve.length) {
+  const dims  = [...new Set(D.milk_curve.map(r => r.DaysInMilk))].sort((a,b) => a-b);
+  const farms = [...new Set(D.milk_curve.map(r => r.HerdIdentifier))].sort();
+  mk('milkCurveChart', {
+    type: 'line',
+    data: { labels: dims, datasets: farms.map((f, i) => ({
+      label: farmName(f), borderColor: C.farms[i % C.farms.length], backgroundColor: 'transparent',
+      borderWidth: 2, pointRadius: 0, tension: 0.3,
+      data: dims.map(d => { const r = D.milk_curve.find(x => x.HerdIdentifier === f && x.DaysInMilk === d);
+                             return r ? r.MeanMilkKg : null; }) })) },
+    options: { ...chartDefaults, scales: {
+      y: { grid:{color:'#ede3d4'}, title:{display:true,text:'kg milk / day',color:C.muted} },
+      x: { grid:{display:false}, title:{display:true,text:'Days in milk',color:C.muted}, ticks:{maxTicksLimit:12} } } }
+  });
+  mk('milkBehChart', {
+    type: 'line',
+    data: { labels: D.milk_beh.map(r => r.DaysInMilk), datasets: [
+      { label:'Milk (kg/d)', data:D.milk_beh.map(r => r.Milk), yAxisID:'y', borderColor:C.green,
+         backgroundColor:'transparent', borderWidth:2.5, pointRadius:0, tension:0.3 },
+      { label:'Ruminating (min/d)', data:D.milk_beh.map(r => r.Ruminating), yAxisID:'y1', borderColor:C.amber,
+         backgroundColor:'transparent', borderWidth:2, pointRadius:0, tension:0.3 },
+      { label:'Eating (min/d)', data:D.milk_beh.map(r => r.Eating), yAxisID:'y1', borderColor:C.brown2,
+         backgroundColor:'transparent', borderWidth:2, pointRadius:0, tension:0.3, borderDash:[5,4] } ] },
+    options: { ...chartDefaults, scales: {
+      y:  { position:'left',  grid:{color:'#ede3d4'}, title:{display:true,text:'kg / day',color:C.muted} },
+      y1: { position:'right', grid:{display:false},  title:{display:true,text:'min / day',color:C.muted} },
+      x:  { grid:{display:false}, title:{display:true,text:'Days in milk',color:C.muted}, ticks:{maxTicksLimit:12} } } }
+  });
+}
+ 
+</script>
+</body>
+</html>
