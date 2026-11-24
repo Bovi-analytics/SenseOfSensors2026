@@ -1,8 +1,4 @@
 # Databricks notebook source
-# /// script
-# [tool.databricks.environment]
-# environment_version = "6"
-# ///
 ## CELL 1 — Imports and data loading
 
 from pyspark.sql import functions as F
@@ -10,8 +6,10 @@ import json, shutil, os
 
 dbutils.widgets.text("RepoUrl", "https://github.com/Bovi-analytics/SenseOfSensors2026")
 dbutils.widgets.text("DatasetDoi", "")      # e.g. 10.xxxx/yyyy once the dataset is published
+dbutils.widgets.text("BovidaetaUrl", "")    # link to the dataset in bovidaeta, once published
 REPO_URL    = dbutils.widgets.get("RepoUrl").strip().rstrip("/")
 DATASET_DOI = dbutils.widgets.get("DatasetDoi").strip()
+BOVIDAETA_URL = dbutils.widgets.get("BovidaetaUrl").strip()
  
 GOLD_VOLUME   = "/Volumes/senseofsensors_catalog/gold/gold_volume"
 SILVER_VOLUME = "/Volumes/senseofsensors_catalog/silver/silver_volume"
@@ -300,6 +298,12 @@ print(f" JSON ready — {len(data_json):,} bytes")
 doi_html = (f'<a class="btn" href="https://doi.org/{DATASET_DOI}">Dataset DOI</a>' if DATASET_DOI
             else '<span class="pending">Dataset DOI: added on publication</span>')
 milk_card_note = (f" Milk recording (MilkDay) is included for {milk_stats['farms']} farms." if HAS_MILK else "")
+milk_hero = (f", with daily milk recording for {milk_stats['farms']} farms" if HAS_MILK else "")
+milk_topic = ", milk yield" if HAS_MILK else ""
+n_datasets = 5 if HAS_MILK else 4
+gold_tables = 8 if HAS_MILK else 7
+milk_bronze = (", MilkYield (Excel workbook, one sheet per farm)" if HAS_MILK else "")
+bovidaeta_html = (f'<a class="btn alt" href="{BOVIDAETA_URL}">bovidaeta format</a>' if BOVIDAETA_URL else "")
 
 access_section = f"""
 <!-- DATA & CODE -->
@@ -315,13 +319,13 @@ access_section = f"""
       <h3>SOS24h — daily dataset</h3>
       <p>One row per cow per day: time budgets (eating, ruminating, lying, standing, walking, inactive),
          lactation stage, health and reproduction records, and daily farm climate (THI).{milk_card_note}</p>
-      {doi_html}
+      {doi_html} {bovidaeta_html}
     </div>
     <div class="card access-card">
       <h3>SOS2h — 2-hour dataset</h3>
       <p>The same cows in twelve 2-hour bins per day, built from the 15-minute sensor series,
          with 2-hourly farm climate. Daily totals in SOS24h equal the sum of these bins.</p>
-      {doi_html}
+      {doi_html} {bovidaeta_html}
     </div>
     <div class="card access-card">
       <h3>Pipeline code</h3>
@@ -794,12 +798,12 @@ nav a {{ white-space: nowrap; }}
     <div>
       <div class="hero-eyebrow">Precision Dairy Farming Analytics</div>
       <h1 class="hero-title">
-        Leg Sensor Data<br>from <em>Commercial Dairy Farms</em><br>— Research Report
+        Leg &amp; Neck Sensor Data<br>from <em>Commercial Dairy Farms</em><br>— Research Report
       </h1>
       <p class="hero-desc">
-        A complete medallion data pipeline processing 1.2 billion leg-sensor readings
-        from 8 commercial dairy farms. Covering behaviour, heat stress, transition
-        cow health, and reproductive performance across 2016–2020.
+        A complete medallion data pipeline processing 1.2 billion leg- and neck-sensor readings
+        from 8 commercial dairy farms{milk_hero}. Covering behaviour, heat stress, transition
+        cow health{milk_topic}, and reproductive performance across 2016–2020.
       </p>
       <div class="hero-institutions">
         <div class="inst-badge">Utrecht University</div>
@@ -840,12 +844,12 @@ nav a {{ white-space: nowrap; }}
       </div>
       <div class="pl-arrow">↓</div>
       <div class="pl-layer">
-        <div class="pl-name"><div class="pl-dot silver"></div>Silver — 4 Datasets Cleaned</div>
+        <div class="pl-name"><div class="pl-dot silver"></div>Silver — {n_datasets} Datasets Cleaned</div>
         <div class="pl-count"><strong>5 metadata tables</strong>rules-as-data</div>
       </div>
       <div class="pl-arrow">↓</div>
       <div class="pl-layer">
-        <div class="pl-name"><div class="pl-dot gold"></div>Gold — 7 Delta Tables</div>
+        <div class="pl-name"><div class="pl-dot gold"></div>Gold — {gold_tables} Delta Tables</div>
         <div class="pl-count"><strong>2,530,267</strong>GoldMaster rows</div>
       </div>
     </div>
@@ -859,8 +863,8 @@ nav a {{ white-space: nowrap; }}
   <div class="section-eyebrow">Dataset Overview</div>
   <div class="section-title">Eight Farms, Five Years, Five Behaviours</div>
   <p class="section-desc">
-    Leg-mounted sensors measure standing, lying, walking, eating and ruminating
-    continuously. One reading every 15 minutes per cow. Data collected across 8 commercial
+    Each cow wore a leg sensor and a neck sensor, which together record lying, standing,
+    walking, eating, ruminating and inactive time. One reading every 15 minutes per cow. Data collected across 8 commercial
     dairy herds spanning a range of herd sizes, management systems, and housing types.
   </p>
  
@@ -1191,19 +1195,24 @@ nav a {{ white-space: nowrap; }}
     <div>
       <div style="font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:1rem">Published Papers Using This Dataset</div>
       <div class="paper-card">
-        <div class="paper-title">Predicting subclinical hypocalcaemia using leg sensor data and LSTM deep learning</div>
-        <div class="paper-meta">van Leerdam et al. — Computers and Electronics in Agriculture, 2022</div>
-        <div class="paper-finding">AUC 0.71 · LSTM outperforms XGBoost and logistic regression · Parity most important static feature</div>
+        <div class="paper-title">Sensor based time budgets in commercial Dutch dairy herds vary over lactation cycles and within 24 hours</div>
+        <div class="paper-meta">Hut, Kuiper, Nielen, Hulsen, Stassen &amp; Hostens — PLOS ONE, 2022 · doi:10.1371/journal.pone.0264392</div>
+        <div class="paper-finding">Time budgets (eating, ruminating, lying, standing, walking) from leg and neck sensors across lactation and the day</div>
       </div>
       <div class="paper-card">
-        <div class="paper-title">Heat stress effects on dairy cow behaviour measured by leg sensors across 8 commercial farms</div>
-        <div class="paper-meta">Hut et al. — Journal of Dairy Science, 2021</div>
-        <div class="paper-finding">Behavioural changes from THI 56 · Eating most sensitive indicator · Farm-level variation documented</div>
+        <div class="paper-title">Heat stress in a temperate climate leads to adapted sensor-based behavioral patterns of dairy cows</div>
+        <div class="paper-meta">Hut, Scheurwater, Nielen, van den Broek &amp; Hostens — Journal of Dairy Science 105(8), 2022 · doi:10.3168/jds.2021-21756</div>
+        <div class="paper-finding">Behavioural responses to heat stress in a temperate climate</div>
       </div>
       <div class="paper-card">
-        <div class="paper-title">Transition cow behavioural patterns linked to reproductive outcomes</div>
-        <div class="paper-meta">SenseOfSensors Consortium — Utrecht University / Cornell University</div>
-        <div class="paper-finding">Pre-calving eating reduction linked to delayed rebreeding · DIM -14 eating time predicts days open</div>
+        <div class="paper-title">Sensor based eating time variables of dairy cows in the transition period related to the time to first service</div>
+        <div class="paper-meta">Hut et al. — Preventive Veterinary Medicine 169, 2019 · doi:10.1016/j.prevetmed.2019.104694</div>
+        <div class="paper-finding">Eating time around calving and its relation to the time to first service</div>
+      </div>
+      <div class="paper-card">
+        <div class="paper-title">A predictive model for hypocalcaemia in dairy cows utilizing behavioural sensor data</div>
+        <div class="paper-meta">van Leerdam et al. — Computers and Electronics in Agriculture, 2024</div>
+        <div class="paper-finding">Predicting (sub)clinical hypocalcaemia from sensor-based behaviour</div>
       </div>
  
       <div style="font-size:0.75rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin:1.5rem 0 0.75rem">Future Research Directions</div>
@@ -1257,8 +1266,8 @@ nav a {{ white-space: nowrap; }}
       <div class="card-title" style="color:#9a7040">⬡ Bronze Layer — Raw Ingestion</div>
       <div class="step">
         <div class="step-num" style="background:#9a7040">1</div>
-        <div><div class="step-title">Four source datasets</div>
-        <div class="step-desc">ReferenceData (Parquet), SensorData (Parquet, 23 folders), THI (CSV), CalendarData (CSV, 2 batches). Read-only — never modified.</div></div>
+        <div><div class="step-title">{n_datasets} source datasets</div>
+        <div class="step-desc">ReferenceData (Parquet), SensorData (Parquet, 23 folders), THI (CSV), CalendarData (CSV, 2 batches){milk_bronze}. Read-only — never modified.</div></div>
       </div>
       <div class="step">
         <div class="step-num" style="background:#9a7040">2</div>
@@ -1774,7 +1783,8 @@ mk('insemChart', {{
  
 // ── Rulebook bars ─────────────────────────────────
 const rbEl = document.getElementById('rulebook-bars');
-[['ReferenceData',64],['SensorData',7],['TemperatureHumidityIndex',13],['CalendarData',7]].forEach(([ds,n]) => {{
+[['ReferenceData',64],['SensorData',7],['TemperatureHumidityIndex',13],['CalendarData',7],
+ ...((D.milk_curve && D.milk_curve.length) ? [['MilkYield',12]] : [])].forEach(([ds,n]) => {{
   const pct = Math.round(n/64*100);
   rbEl.innerHTML += `
   <div style="margin-bottom:1rem;display:flex;align-items:center;gap:1rem">

@@ -3,7 +3,7 @@
 **Institutions:** Utrecht University · Cornell University  
 **Domain:** Precision dairy farming analytics  
 **Data period:** 2016–2021 (re-hosted 2026)  
-**Scale:** ~1.2 billion leg-sensor readings from 8 commercial dairy farms, plus daily milk recording
+**Scale:** ~1.2 billion leg- and neck-sensor readings from 8 commercial dairy farms, plus daily milk recording
 
 **Project page:** <https://bovi-analytics.github.io/SenseOfSensors2026/>  
 **Data licence:** [CC BY 4.0](LICENSE-DATA.md) · **Code licence:** [MIT](LICENSE)
@@ -13,7 +13,7 @@
 ## Project overview
 
 SenseOfSensors is a research data pipeline for precision dairy farming. It turns raw farm-management
-exports, leg-sensor readings and milk recording into analysis-ready data, using the medallion architecture
+exports, leg- and neck-sensor readings and milk recording into analysis-ready data, using the medallion architecture
 (Bronze → Silver → Gold) on Databricks with Unity Catalog.
 
 The data underpins published research on cow behaviour, heat stress adaptation, ketosis detection,
@@ -176,7 +176,7 @@ Derived in silver: `MeasurementDate`, `MeasurementHour`, `THIExternalStatus`, `T
 
 ### 3. SensorData
 
-Leg-sensor readings for all animals on all farms.
+Leg- and neck-sensor readings for all animals on all farms (each cow wore one of each).
 
 | Property | Value |
 |---|---|
