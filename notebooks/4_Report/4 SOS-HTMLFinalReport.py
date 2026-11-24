@@ -1,4 +1,8 @@
 # Databricks notebook source
+# /// script
+# [tool.databricks.environment]
+# environment_version = "6"
+# ///
 ## CELL 1 — Imports and data loading
 
 from pyspark.sql import functions as F
