@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use this code or the SenseOfSensors data, please cite the dataset publication and the original SenseOfSensors study (Hut et al., 2022, PLOS ONE)."
+title: "SenseOfSensors: Bronze-Silver-Gold pipeline and the SOS24h / SOS2h dairy cow sensor datasets"
+type: software
+authors:
+  - family-names: "Mallikarjuna"
+    given-names: "Lipika"
+  - family-names: "Hostens"
+    given-names: "Miel"
+  - family-names: "Hut"
+    given-names: "Peter R."
+  - family-names: "Stassen"
+    given-names: "Elsbeth"
+  - family-names: "Nielen"
+    given-names: "Mirjam"
+  - family-names: "Koop"
+    given-names: "Gerrit"
+  - family-names: "Hulsen"
+    given-names: "Jan"
+  - family-names: "Harbers"
+    given-names: "Arnold"
+repository-code: "https://github.com/Bovi-analytics/SenseOfSensors2026"
+url: "https://bovi-analytics.github.io/SenseOfSensors2026/"
+license:
+  - MIT
+  - CC-BY-4.0
+keywords:
+  - "dairy cows"
+  - "precision livestock farming"
+  - "sensor data"
+  - "behaviour"
+  - "time budgets"
+  - "milk yield"
+  - "open data"

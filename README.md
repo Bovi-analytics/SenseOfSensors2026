@@ -311,7 +311,15 @@ MidLactation (61–150), LateLactation (151–305), Extended (> 305).
 
 ## How to cite
 
-Please cite the dataset publication (reference and DOI added on publication) and this repository.
+The data are licensed under CC BY 4.0, which requires credit to the source. Please cite:
+
+1. the dataset publication (reference and DOI added on publication),
+2. the original SenseOfSensors study: Hut et al. (2022), PLOS ONE,
+3. this repository (GitHub's "Cite this repository" button uses [CITATION.cff](CITATION.cff)).
+
+## Acknowledgements
+
+The SenseOfSensors dataset was made available for open science with the agreement of the project partners: Peter R. Hut, Elsbeth Stassen, Mirjam Nielen, Gerrit Koop, Jan Hulsen and Arnold Harbers. Pipeline and release: Lipika Mallikarjuna and Miel Hostens (Bovi-Analytics lab, Cornell University).
 
 ---
 
