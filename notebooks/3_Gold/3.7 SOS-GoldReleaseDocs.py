@@ -99,6 +99,19 @@ FILL = {   # Column: (unit, description) — used only where the dictionary is e
     "HeatStressHoursExternal": ("h", "Hourly readings with outdoor THI > 72"),
     "SevereHeatStressHoursExternal": ("h", "Hourly readings with outdoor THI > 80"),
     "CumulativeHeatLoadExternal": ("THI-h", "Sum of (THI - 72) over hourly readings with outdoor THI > 72"),
+    "LyingSummary": ("min/d", "Lying time per day from the leg sensor's own daily summary (device total; compare DailyLyingMin15)"),
+    "StandingSummary": ("min/d", "Standing time per day from the leg sensor's own daily summary (device total; compare DailyStandingMin15)"),
+    "WalkingSummary": ("min/d", "Walking time per day from the leg sensor's own daily summary (device total; compare DailyWalkingMin15)"),
+    "LegActivitySummary": ("sensor units/d", "Leg activity per day from the leg sensor's own daily summary"),
+    "HeatStressHoursInternal": ("h", "Hourly readings with indoor THI > 72 (farms with an indoor sensor only)"),
+    "SevereHeatStressHoursInternal": ("h", "Hourly readings with indoor THI > 80 (farms with an indoor sensor only)"),
+    "CumulativeHeatLoadInternal": ("THI-h", "Sum of (THI - 72) over hourly readings with indoor THI > 72 (farms with an indoor sensor only)"),
+    "CycleWeek4": ("d", "Day of the oestrous cycle recorded at the reproductive examination around week 4 after calving (0-21)"),
+    "CycleWeek8": ("d", "Day of the oestrous cycle recorded at the reproductive examination around week 8 after calving (0-21)"),
+    "HeatEventCount": ("count", "Number of heat (oestrus) events recorded in this lactation"),
+    "PregnancyCheckCount": ("count", "Number of pregnancy checks recorded in this lactation"),
+    "CalvingSignal": ("code", "Calving signal / detection code 1-6 from the farm records (labels provisional: 1 no signal, 2 tail up, "
+                              "3 sensor alert, 4 visual check, 5 farmer observation, 6 other)"),
     "DailyTHIStatusExternal": ("", "Heat-stress class from the day's maximum outdoor THI: <50 NoStress, 50-72 Mild, "
                                    ">72 HeatStress, >80 SevereHeatStress"),
 }
