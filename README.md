@@ -111,7 +111,8 @@ notebooks/
 │   ├── 3.40 SOS-GoldLayer10DailyMilkYield.py           Gold 10 — DailyMilkYield
 │   ├── 3.41 SOS-GoldLayer9Validation1.py               Replicates published findings as a validation
 │   ├── 3.5  SOS-GoldExportDatasets.py                  Builds the released SOS24h and SOS2h datasets
-│   └── 3.6  SOS-GoldExportMilk.py                      Adds MilkDay files to SOS24h (no full rebuild)
+│   ├── 3.6  SOS-GoldExportMilk.py                      Adds MilkDay files to SOS24h (no full rebuild)
+│   └── 3.7  SOS-GoldReleaseDocs.py                     Licence/citation in the ReadMe files; fills data dictionary gaps
 │
 └── 4_Report/
     └── 4 SOS-HTMLFinalReport.py                        Builds the project page (writes docs/index.html)
@@ -294,6 +295,7 @@ MidLactation (61–150), LateLactation (151–305), Extended (> 305).
 3.40          Gold 10 — DailyMilkYield (after GoldMaster)
 3.5           Export SOS24h and SOS2h
 3.6           Add MilkDay files to SOS24h (re-run after every 3.5)
+3.7           Release documentation: licence and citation in ReadMe, data dictionary gaps (re-run after 3.5/3.6)
 4             Project page (docs/index.html)
 ```
 
