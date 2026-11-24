@@ -342,8 +342,8 @@ access_section = f"""
   </div>
   <div class="licence-row">
     <strong>Licences.</strong> Data: <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>
-    (<a href="{REPO_URL}/blob/main/LICENSE-DATA.md">LICENSE-DATA</a>) · Code: MIT
-    (<a href="{REPO_URL}/blob/main/LICENSE">LICENSE</a>).
+    (<a href="{REPO_URL}/blob/main/LICENSE-DATA">LICENSE-DATA</a>) · Code: MIT
+    (<a href="{REPO_URL}/blob/main/LICENSE-CODE">LICENSE-CODE</a>).
     Please cite the dataset publication when you use the data.
   </div>
 </section>

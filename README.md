@@ -6,7 +6,7 @@
 **Scale:** ~1.2 billion leg- and neck-sensor readings from 8 commercial dairy farms, plus daily milk recording
 
 **Project page:** <https://bovi-analytics.github.io/SenseOfSensors2026/>  
-**Data licence:** [CC BY 4.0](LICENSE-DATA.md) · **Code licence:** [MIT](LICENSE)
+**Data licence:** [CC BY 4.0](LICENSE-DATA) · **Code licence:** [MIT](LICENSE-CODE)
 
 ---
 
@@ -42,8 +42,23 @@ Each dataset has a `ReadMe.txt` (notes and build log) and a data dictionary
 (`DataDictionarySOS24h.csv`, `DataDictionarySOS2h.csv`). The 15-minute daily totals in SOS24h are the sums
 of the 2-hour bins in SOS2h, so the two datasets always agree.
 
-The data files are published with the dataset paper; they are not stored in this repository.
-Dataset DOI: *added on publication*.
+The data files are not stored in this repository. They are released in two places:
+
+## Get the data
+
+| Where | What | Status |
+|---|---|---|
+| **bovidaeta** (Bovi-Analytics open data format) | SOS24h as `bovidaeta_catalog.senseofsensors_gold_sos24h`; SOS2h to follow | Being published — link added here when live |
+| **Frontiers in Animal Science** (FAIR² Data Article) | SOS24h with a peer-reviewed data article and DOI | In preparation — DOI added here on publication |
+
+**Notes on the bovidaeta version**
+- Daily farm climate (THI, temperature, humidity, heat-stress hours) is not yet included: the format has no
+  farm-level record. It is complete in the SOS24h / SOS2h files and will be added when the format supports it.
+- Twin births are two Calving events (one per calf). Stillborn status and calving type are recorded for both
+  calves, because the source does not say which calf they refer to.
+- Blood calcium and BHBA are LabMeasurement events; health conditions (including those from the farm notes)
+  are Diagnosis events. A few farm notes that only repeat another event (for example "calved") are not converted.
+- Milk recording exists for 3 farms only (days 0–105 of each lactation, 2015–2018).
 
 ---
 
@@ -102,8 +117,9 @@ notebooks/
     └── 4 SOS-HTMLFinalReport.py                        Builds the project page (writes docs/index.html)
 
 docs/          GitHub Pages site (project report + links to data and code)
-LICENSE        MIT licence for the code
-LICENSE-DATA.md  CC BY 4.0 licence for the data
+LICENSE-CODE   MIT licence for the code
+LICENSE-DATA   CC BY 4.0 licence for the data
+CITATION.cff   How to cite (GitHub "Cite this repository")
 ```
 
 The notebooks are Databricks source files (`.py` with `# COMMAND ----------` cell separators). Import them
@@ -325,8 +341,8 @@ The SenseOfSensors dataset was made available for open science with the agreemen
 
 ## Licences
 
-- **Code** (notebooks and scripts): [MIT](LICENSE)
-- **Data** (SOS24h, SOS2h, data dictionaries, report figures): [CC BY 4.0](LICENSE-DATA.md)
+- **Code** (notebooks and scripts): [MIT](LICENSE-CODE)
+- **Data** (SOS24h, SOS2h, data dictionaries, report figures): [CC BY 4.0](LICENSE-DATA)
 
 ---
 
